@@ -13,8 +13,8 @@ public class Feature {
 
     private String name; // Backlog, Board, etc.
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "template_id")
+    @ManyToOne
+    @JoinColumn(name = "template_id", nullable = false)
     private Template template;
 
     @OneToMany(mappedBy = "feature", cascade = CascadeType.ALL, orphanRemoval = true)

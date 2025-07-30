@@ -6,24 +6,27 @@ import jakarta.persistence.*;
 @Table(name = "tasks")
 public class Task {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    private String name; // Create User Story, Assign Sprint, etc.
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "feature_id")
-    private Feature feature;
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
 
-    // Constructors, getters, setters
+        private String name;
 
-    public Task() {}
+        @ManyToOne
+        @JoinColumn(name = "feature_id")
+        private Feature feature;
 
-    public Task(String name, Feature feature) {
-        this.name = name;
-        this.feature = feature;
-    }
+        public Task() {}
+        public Task(String name, Feature feature) {
+            this.name = name;
+            this.feature = feature;
+
+
+
+        }
+
 
     // Getters & setters
 

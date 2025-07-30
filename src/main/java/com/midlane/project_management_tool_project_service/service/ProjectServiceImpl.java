@@ -32,6 +32,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+
     public Project createProject(String projectName, String projectType, String templateName) {
         try {
             logger.info("Creating project '{}', type '{}', template '{}'", projectName, projectType, templateName);
@@ -39,37 +40,42 @@ public class ProjectServiceImpl implements ProjectService {
             // Find or create Template
             Template template = templateRepository.findByNameIgnoreCase(templateName)
                     .orElseGet(() -> {
-                        logger.warn("Template '{}' not found, creating new", templateName);
-                        return new Template(templateName);
+                        logger.warn("Template '{}' not found, creating and saving new", templateName);
+                        Template newTemplate = new Template(templateName);
+                        return templateRepository.save(newTemplate);
                     });
 
             // Get features and tasks from strategy
             TemplateStrategy strategy = StrategyFactory.getStrategy(templateName);
             Map<String, List<String>> featureTasksMap = strategy.getFeaturesAndTasks();
 
-            Set<Feature> features = new LinkedHashSet<>();
+            Set<Feature> existingFeatures = template.getFeatures();
+            if (existingFeatures == null) {
+                existingFeatures = new LinkedHashSet<>();
+                template.setFeatures(existingFeatures); // Only once if not set before
+            }
 
             for (Map.Entry<String, List<String>> entry : featureTasksMap.entrySet()) {
                 String featureName = entry.getKey();
-                List<String> tasksNames = entry.getValue();
+                List<String> taskNames = entry.getValue();
 
                 Feature feature = new Feature(featureName, template);
 
                 Set<Task> tasks = new LinkedHashSet<>();
-                for (String taskName : tasksNames) {
+                for (String taskName : taskNames) {
                     tasks.add(new Task(taskName, feature));
                 }
                 feature.setTasks(tasks);
 
-                features.add(feature);
+                existingFeatures.add(feature); // Add to an existing set
             }
 
-            template.setFeatures(features);
+// template.setFeatures(features); ❌ DON'T DO THIS! It triggers the orphanRemoval error
 
-            // Save template cascades features and tasks
+// Save template (cascades features and tasks)
             template = templateRepository.save(template);
 
-            // Create and save Project linked to Template
+// Create and save a project linked to template
             Project project = new Project(projectName, projectType, template);
             Project savedProject = projectRepository.save(project);
 
@@ -84,4 +90,5 @@ public class ProjectServiceImpl implements ProjectService {
             throw new RuntimeException("Failed to create project", e);
         }
     }
+
 }
