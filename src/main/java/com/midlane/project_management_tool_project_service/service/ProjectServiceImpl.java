@@ -5,6 +5,7 @@ import com.midlane.project_management_tool_project_service.model.Feature;
 import com.midlane.project_management_tool_project_service.model.Project;
 import com.midlane.project_management_tool_project_service.model.Task;
 import com.midlane.project_management_tool_project_service.model.Template;
+import com.midlane.project_management_tool_project_service.repository.FeatureRepository;
 import com.midlane.project_management_tool_project_service.repository.ProjectRepository;
 import com.midlane.project_management_tool_project_service.repository.TemplateRepository;
 import com.midlane.project_management_tool_project_service.strategy.StrategyFactory;
@@ -12,83 +13,42 @@ import com.midlane.project_management_tool_project_service.strategy.TemplateStra
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-
 @Service
-@Transactional
 public class ProjectServiceImpl implements ProjectService {
 
-    private static final Logger logger = LoggerFactory.getLogger(ProjectServiceImpl.class);
+    @Autowired
+    private ProjectRepository projectRepo;
+    @Autowired
+    private TemplateRepository templateRepo;
+    @Autowired
+    private FeatureRepository featureRepo;
+    @Autowired
+    private StrategyFactory strategyFactory;
 
-    private final ProjectRepository projectRepository;
-    private final TemplateRepository templateRepository;
+    public Project createProject(String projectName, String templateName) {
+        Template template = templateRepo.findByName(templateName).orElseThrow();
+        Project project = new Project();
+        project.setName(projectName);
+        project.setTemplate(template);
 
-    public ProjectServiceImpl(ProjectRepository projectRepository,
-                              TemplateRepository templateRepository) {
-        this.projectRepository = projectRepository;
-        this.templateRepository = templateRepository;
-    }
+        project = projectRepo.save(project);
 
-    @Override
+        TemplateStrategy strategy = strategyFactory.getStrategy(templateName);
+        List<String> featureNames = strategy.getFeatures();
 
-    public Project createProject(String projectName, String projectType, String templateName) {
-        try {
-            logger.info("Creating project '{}', type '{}', template '{}'", projectName, projectType, templateName);
-
-            // Find or create Template
-            Template template = templateRepository.findByNameIgnoreCase(templateName)
-                    .orElseGet(() -> {
-                        logger.warn("Template '{}' not found, creating and saving new", templateName);
-                        Template newTemplate = new Template(templateName);
-                        return templateRepository.save(newTemplate);
-                    });
-
-            // Get features and tasks from strategy
-            TemplateStrategy strategy = StrategyFactory.getStrategy(templateName);
-            Map<String, List<String>> featureTasksMap = strategy.getFeaturesAndTasks();
-
-            Set<Feature> existingFeatures = template.getFeatures();
-            if (existingFeatures == null) {
-                existingFeatures = new LinkedHashSet<>();
-                template.setFeatures(existingFeatures); // Only once if not set before
-            }
-
-            for (Map.Entry<String, List<String>> entry : featureTasksMap.entrySet()) {
-                String featureName = entry.getKey();
-                List<String> taskNames = entry.getValue();
-
-                Feature feature = new Feature(featureName, template);
-
-                Set<Task> tasks = new LinkedHashSet<>();
-                for (String taskName : taskNames) {
-                    tasks.add(new Task(taskName, feature));
-                }
-                feature.setTasks(tasks);
-
-                existingFeatures.add(feature); // Add to an existing set
-            }
-
-// template.setFeatures(features); ❌ DON'T DO THIS! It triggers the orphanRemoval error
-
-// Save template (cascades features and tasks)
-            template = templateRepository.save(template);
-
-// Create and save a project linked to template
-            Project project = new Project(projectName, projectType, template);
-            Project savedProject = projectRepository.save(project);
-
-            logger.info("Project '{}' created with ID {}", savedProject.getName(), savedProject.getId());
-            return savedProject;
-
-        } catch (IllegalArgumentException e) {
-            logger.error("Invalid template: {}", e.getMessage());
-            throw e;
-        } catch (Exception e) {
-            logger.error("Error creating project", e);
-            throw new RuntimeException("Failed to create project", e);
+        for (String fname : featureNames) {
+            Feature f = new Feature();
+            f.setName(fname);
+            f.setTemplate(template);
+            f.setProject(project);
+            featureRepo.save(f);
         }
+
+        return project;
     }
 
 }
