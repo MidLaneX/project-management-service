@@ -1,10 +1,17 @@
 package com.midlane.project_management_tool_project_service.model;
 
 import jakarta.persistence.*;
-import java.util.Set;
+import lombok.*;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "projects")
+@Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Project {
 
     @Id
@@ -12,38 +19,14 @@ public class Project {
     private Long id;
 
     private String name;
+    private String userId;
+    private String type;
+    private String templateType;
 
-    private String projectType;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "template_id")
-    private Template template;
 
-    // Constructors, getters, setters
-
-    public Project() {}
-
-    public Project(String name, String projectType, Template template) {
-        this.name = name;
-        this.projectType = projectType;
-        this.template = template;
-    }
-
-    // Getters & setters
-
-    public Long getId() { return id; }
-
-    public String getName() { return name; }
-
-    public String getProjectType() { return projectType; }
-
-    public Template getTemplate() { return template; }
-
-    public void setId(Long id) { this.id = id; }
-
-    public void setName(String name) { this.name = name; }
-
-    public void setProjectType(String projectType) { this.projectType = projectType; }
-
-    public void setTemplate(Template template) { this.template = template; }
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "project_features", joinColumns = @JoinColumn(name = "project_id"))
+    @Column(name = "feature")
+    private List<String> features;
 }
