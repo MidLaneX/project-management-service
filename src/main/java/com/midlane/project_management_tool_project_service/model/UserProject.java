@@ -2,7 +2,7 @@ package com.midlane.project_management_tool_project_service.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-
+import lombok.Builder;
 @Entity
 @Table(name = "project_user")
 @Getter
@@ -10,6 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+
 public class UserProject {
 
     @Id

@@ -19,7 +19,6 @@ public class Project {
     private Long id;
 
     private String name;
-    private String userId;
     private String type;
     private String templateType;
 

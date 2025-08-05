@@ -1,10 +1,8 @@
 package com.midlane.project_management_tool_project_service.template;
 
-import com.midlane.project_management_tool_project_service.dto.ProjectDTO;
-import com.midlane.project_management_tool_project_service.dto.UserProjectDTO;
-import com.midlane.project_management_tool_project_service.dto.SprintDTO;
-import com.midlane.project_management_tool_project_service.dto.StoryDTO;
+import com.midlane.project_management_tool_project_service.dto.*;
 import com.midlane.project_management_tool_project_service.exception.ResourceNotFoundException;
+import com.midlane.project_management_tool_project_service.handler.GlobalExceptionHandler;
 import com.midlane.project_management_tool_project_service.model.Project;
 import com.midlane.project_management_tool_project_service.model.UserProject;
 import com.midlane.project_management_tool_project_service.model.featureItemModel.Sprint;
@@ -16,6 +14,7 @@ import com.midlane.project_management_tool_project_service.repository.UserProjec
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -26,8 +25,7 @@ public class ScrumTemplateImpl implements ScrumTemplate {
     private final SprintRepository sprintRepository;
     private final StoryRepository storyRepository;
     private final UserProjectRepository userProjectRepository;
-
-
+    private final GlobalExceptionHandler globalExceptionHandler;
 
 
     @Override
@@ -125,36 +123,66 @@ public class ScrumTemplateImpl implements ScrumTemplate {
         return  storyDTO;
     }
 
-
-    public UserProjectDTO createUserProject(ProjectDTO projectDTO, UserProjectDTO userProjectDTO) {
-        if (projectDTO.getId() != null) {
-            userProjectDTO.setProjectId(projectDTO.getId());
+    // use for assign people for projects
+    public UserProjectDTO createUserProject(ProjectDTO projectDTO, UserProjectRequestDTO userProjectRequestDTO) {
+        if (projectDTO.getId() == null) {
+            throw new IllegalArgumentException("Project ID cannot be null");
         }
 
-        // Map DTO to Entity
         UserProject userProject = UserProject.builder()
-                .projectId(userProjectDTO.getProjectId())
-                .userId(userProjectDTO.getUserId())
-                .role(userProjectDTO.getRole())
+                .projectId(projectDTO.getId())
+                .userId(userProjectRequestDTO.getUserId())
+                .role(userProjectRequestDTO.getRole())
                 .build();
 
-        // Save entity
+        UserProjectDTO userProjectDTO=new UserProjectDTO();
+        userProjectDTO.setProjectId(projectDTO.getId());
+        userProjectDTO.setUserId(userProjectRequestDTO.getUserId());
+        userProjectDTO.setRole(userProjectRequestDTO.getRole());
 
+        userProjectRepository.save(userProject);
 
-        userProject = userProjectRepository.save(userProject);
-         projectDTO.setId(userProject.getId());
-         return userProjectDTO;
+        return userProjectDTO;
 
 
     }
 
-    public UserProjectDTO getUserProject(ProjectDTO dto) {
-        List<UserProject> userProjects=userProjectRepository.findByProjectId(dto.getId());
-        UserProjectDTO userProjectDTO1=new UserProjectDTO();
-        userProjectDTO1.setProjectId(dto.getId());
-        userProjectDTO1.setUserId(userProjects.get(0).getUserId());
-        userProjectDTO1.setRole(userProjects.get(0).getRole());
-        return userProjectDTO1;
+    @Override
+    public List<UserProjectDTO> getUsersOfProject(ProjectDTO projectDTO) {
+        if (projectDTO.getId() == null) {
+            throw new IllegalArgumentException("Project ID cannot be null");
+        }
+        List<UserProject> userProjects=userProjectRepository.findByProjectId(projectDTO.getId());
+        List<UserProjectDTO> usersOfProject=new ArrayList<>();
+        for (UserProject userProject : userProjects) {
+            UserProjectDTO dto =new UserProjectDTO();
+
+            dto.setRole(userProject.getRole());
+            dto.setProjectId(projectDTO.getId());
+            dto.setUserId(userProject.getUserId());
+            usersOfProject.add(dto);
+        }
+        return usersOfProject;
     }
+
+
+    @Override
+    public List<ProjectDTO> getProjectsOfUser(UserProjectRequestDTO userProjectRequestDTO) {
+        if (userProjectRequestDTO.getUserId() == null) {
+            throw new IllegalArgumentException("User ID cannot be null");
+        }
+        List<UserProject> userProjects = userProjectRepository.findByUserId(userProjectRequestDTO.getUserId());
+        List<ProjectDTO> projectsOfUser = new ArrayList<>();
+
+        for (UserProject userProject : userProjects) {
+            ProjectDTO dto = new ProjectDTO();
+            dto.setId(userProject.getId());
+            projectsOfUser.add(dto);
+
+        }
+
+        return projectsOfUser;
+    }
+
 
 }

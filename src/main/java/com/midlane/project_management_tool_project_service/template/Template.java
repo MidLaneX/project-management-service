@@ -1,10 +1,9 @@
 // Template.java
 package com.midlane.project_management_tool_project_service.template;
 
-import com.midlane.project_management_tool_project_service.dto.ProjectDTO;
-import com.midlane.project_management_tool_project_service.dto.UserProjectDTO;
-import com.midlane.project_management_tool_project_service.dto.SprintDTO;
-import com.midlane.project_management_tool_project_service.dto.StoryDTO;
+import com.midlane.project_management_tool_project_service.dto.*;
+
+import java.util.List;
 
 public interface Template {
     ProjectDTO createProject(ProjectDTO dto);
@@ -16,7 +15,11 @@ public interface Template {
 
 
 
-    UserProjectDTO getUserProject(ProjectDTO dto);
 
-    UserProjectDTO createUserProject(ProjectDTO projectDTO, UserProjectDTO userProjectDTO);
+
+    UserProjectDTO createUserProject(ProjectDTO projectDTO, UserProjectRequestDTO userProjectRequestDTO);
+
+    List<UserProjectDTO> getUsersOfProject(ProjectDTO projectDTO);
+
+    List<ProjectDTO> getProjectsOfUser(UserProjectRequestDTO userProjectRequestDTO);
 }

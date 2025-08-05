@@ -1,13 +1,12 @@
 // ProjectService.java
 package com.midlane.project_management_tool_project_service.service;
 
-import com.midlane.project_management_tool_project_service.dto.ProjectDTO;
-import com.midlane.project_management_tool_project_service.dto.UserProjectDTO;
-import com.midlane.project_management_tool_project_service.dto.SprintDTO;
-import com.midlane.project_management_tool_project_service.dto.StoryDTO;
+import com.midlane.project_management_tool_project_service.dto.*;
 import com.midlane.project_management_tool_project_service.template.TemplateFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -38,10 +37,13 @@ public class ProjectService {
         return templateFactory.getTemplate(dto.getTemplateType()).getStory(dto);
     }
 
-    public UserProjectDTO createUserProject( ProjectDTO projectDTO,UserProjectDTO userProjectDTO) {
+    public UserProjectDTO createUserProject( ProjectDTO projectDTO,UserProjectRequestDTO userProjectDTO) {
         return templateFactory.getTemplate(projectDTO.getTemplateType()).createUserProject(projectDTO,userProjectDTO);
     }
-    public UserProjectDTO getUserProject(ProjectDTO dto) {
-       return  templateFactory.getTemplate(dto.getTemplateType()).getUserProject(dto);
+    public List<UserProjectDTO> getUsersOfProject(ProjectDTO projectDTO) {
+       return  templateFactory.getTemplate(projectDTO.getTemplateType()).getUsersOfProject(projectDTO);
+    }
+    public List<ProjectDTO> getProjectsOfUser(ProjectDTO projectDTO, UserProjectRequestDTO userProjectRequestDTO) {
+        return  templateFactory.getTemplate(projectDTO.getTemplateType()).getProjectsOfUser(userProjectRequestDTO);
     }
 }

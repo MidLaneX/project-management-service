@@ -1,10 +1,7 @@
 // ProjectController.java
 package com.midlane.project_management_tool_project_service.controller;
 
-import com.midlane.project_management_tool_project_service.dto.ProjectDTO;
-import com.midlane.project_management_tool_project_service.dto.UserProjectDTO;
-import com.midlane.project_management_tool_project_service.dto.SprintDTO;
-import com.midlane.project_management_tool_project_service.dto.StoryDTO;
+import com.midlane.project_management_tool_project_service.dto.*;
 import com.midlane.project_management_tool_project_service.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -30,14 +27,23 @@ public class ProjectController {
          return ResponseEntity.ok(projectService.getProject(dto));
     }
 
-    @PostMapping("/userprojects")
-    public ResponseEntity<UserProjectDTO> getUserProjects(@RequestBody ProjectDTO dto,@RequestBody UserProjectDTO userProjectDTO) {
-        return  ResponseEntity.ok(projectService.createUserProject(dto,userProjectDTO));
+    @PostMapping("/createUserProjects")
+    public ResponseEntity<UserProjectDTO> createUserProjects(@RequestBody CreateUserProjectRequestDTO requestDTO) {
+        return  ResponseEntity.ok(projectService.createUserProject(requestDTO.getProjectDTO(),requestDTO.getUserProjectRequestDTO()));
     }
 
-    @GetMapping("/userprojects")
-    public ResponseEntity<List<UserProjectDTO>> getUserProject(@RequestBody ProjectDTO dto) {
-        return  ResponseEntity.ok(Collections.singletonList(projectService.getUserProject(dto)));
+    @GetMapping("/userProjects")
+    public ResponseEntity<List<UserProjectDTO>> getUserProject(@RequestParam Long id, @RequestParam String templateType) {
+        ProjectDTO requestDTO = new ProjectDTO();
+        requestDTO.setId(id);
+        requestDTO.setTemplateType(templateType);
+        return ResponseEntity.ok(projectService.getUsersOfProject(requestDTO));
+    }
+
+
+    @GetMapping("/projectsOfUser")
+    public ResponseEntity<List<ProjectDTO>> getProjectsOfUser(@RequestBody CreateUserProjectRequestDTO requestDTO) {
+        return ResponseEntity.ok(Collections.singletonList( (ProjectDTO) projectService.getProjectsOfUser(requestDTO.getProjectDTO(), requestDTO.getUserProjectRequestDTO())));
     }
 
     @PostMapping("/{projectId}/sprints")
