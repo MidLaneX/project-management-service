@@ -6,7 +6,8 @@ import java.util.Map;
 
 @Data
 public class TaskRequestDto {
-    private Long featureId;
-    private String name;
-    private Map<String, Object> extraData; // optional
+    private Long id;
+    private Long projectId;
+    private Long sprintId;
+
 }

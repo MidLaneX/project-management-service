@@ -27,9 +27,8 @@ public class Sprint {
 
     private LocalDate endDate;
 
+    private String goal;
+
     private String status; // Planned, Active, Closed
 
-    public  Long getProjectId() {
-        return projectId;
-    }
 }

@@ -20,4 +20,10 @@ public class ProjectDTO {
     private List<String> features;
 
 
+    public ProjectDTO(Long id, String name, String templateType, List<String> features) {
+         this.id = id;
+         this.name = name;
+         this.templateType = templateType;
+         this.features = features;
+    }
 }

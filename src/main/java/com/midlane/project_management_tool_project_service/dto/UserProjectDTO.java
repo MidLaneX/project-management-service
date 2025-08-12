@@ -14,4 +14,9 @@ public class UserProjectDTO {
     private String role; // Optional: ADMIN, MEMBER, etc.
 
 
+    public UserProjectDTO(Long projectId, Long userId, String role) {
+        this.projectId = projectId;
+        this.userId = userId;
+        this.role = role;
+    }
 }
