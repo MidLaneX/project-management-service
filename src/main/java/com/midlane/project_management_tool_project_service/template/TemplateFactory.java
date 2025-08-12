@@ -1,23 +1,27 @@
-// TemplateFactory.java
 package com.midlane.project_management_tool_project_service.template;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.*;
+
 @Component
-@RequiredArgsConstructor
+
 public class TemplateFactory {
 
-    private final ScrumTemplateImpl scrumTemplate;
+    private final Map<String, Template> templateMap;
 
-    public Template getTemplate(String type) {
-        if ("scrum".equalsIgnoreCase(type)) {
-            return scrumTemplate;
+    public TemplateFactory(List<Template> templates) {
+        this.templateMap = new HashMap<>();
+        for (Template template : templates) {
+            this.templateMap.put(template.getTemplateType().toLowerCase(), template);
         }
-        throw new IllegalArgumentException("Unknown template type: " + type);
     }
 
-    public ScrumTemplate getScrumTemplate() {
-        return scrumTemplate;
+    public Template getTemplate(String type) {
+        Template template = templateMap.get(type.toLowerCase());
+        if (template == null) {
+            throw new IllegalArgumentException("Unknown template type: " + type);
+        }
+        return template;
     }
 }
