@@ -6,13 +6,14 @@ import com.midlane.project_management_tool_project_service.model.*;
 import com.midlane.project_management_tool_project_service.model.featureItemModel.*;
 import com.midlane.project_management_tool_project_service.repository.*;
 import com.midlane.project_management_tool_project_service.repository.featureRepository.*;
-import lombok.RequiredArgsConstructor;
+
+
 
 
 import java.util.ArrayList;
 import java.util.List;
 
-@RequiredArgsConstructor
+
 public abstract class AbstractTemplate implements Template {
 
     protected final ProjectRepository projectRepository;
@@ -20,7 +21,27 @@ public abstract class AbstractTemplate implements Template {
     protected final StoryRepository storyRepository;
     protected final UserProjectRepository userProjectRepository;
     protected  final  TaskRepository taskRepository;
+
+
+
+
+    protected AbstractTemplate(ProjectRepository projectRepo,
+                               SprintRepository sprintRepo,
+                               StoryRepository storyRepo,
+                               UserProjectRepository userProjectRepo,
+                               TaskRepository taskRepo) {
+        this.projectRepository = projectRepo;
+        this.sprintRepository = sprintRepo;
+        this.storyRepository = storyRepo;
+        this.userProjectRepository = userProjectRepo;
+        this.taskRepository = taskRepo;
+
+    }
+
+    @Override
     public abstract String getTemplateType();
+
+    @Override
     public abstract List<FeatureDescriptor> getAvailableFeatures();
 
     @Override
@@ -40,8 +61,18 @@ public abstract class AbstractTemplate implements Template {
     public ProjectDTO getProject(Long projectId) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
-        return new ProjectDTO(project.getId(), project.getName(), project.getTemplateType(), project.getFeatures());
+
+        // No DB fetch for features — return from current template's available features
+        return new ProjectDTO(
+                project.getId(),
+                project.getName(),
+                project.getTemplateType(),
+                getFeatureKeys()
+        );
     }
+
+
+
 
 
 
