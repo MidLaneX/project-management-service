@@ -30,10 +30,11 @@ public class ScrumTemplateImpl extends AbstractTemplate {
     @Override
     public List<FeatureDescriptor> getAvailableFeatures() {
         return List.of(
+                new FeatureDescriptor("sprint", "Product Backlog"),
                 new FeatureDescriptor("backlog", "Product Backlog"),
-                new FeatureDescriptor("summary", "Project Summary"),
+                new FeatureDescriptor("estimation", "Project Summary"),
                 new FeatureDescriptor("timeline", "Timeline"),
-                new FeatureDescriptor("board", "Scrum Board")
+                new FeatureDescriptor("scrum_board", "Scrum Board")
         );
     }
 
