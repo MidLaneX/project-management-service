@@ -19,7 +19,7 @@ public abstract class AbstractTemplate implements Template {
     protected final ProjectRepository projectRepository;
     protected final SprintRepository sprintRepository;
     protected final StoryRepository storyRepository;
-    protected final UserProjectRepository userProjectRepository;
+    protected final TeamProjectRepository teamProjectRepository;
     protected  final  TaskRepository taskRepository;
 
 
@@ -28,12 +28,13 @@ public abstract class AbstractTemplate implements Template {
     protected AbstractTemplate(ProjectRepository projectRepo,
                                SprintRepository sprintRepo,
                                StoryRepository storyRepo,
-                               UserProjectRepository userProjectRepo,
+                               TeamProjectRepository teamProjectRepository,
                                TaskRepository taskRepo) {
         this.projectRepository = projectRepo;
         this.sprintRepository = sprintRepo;
         this.storyRepository = storyRepo;
-        this.userProjectRepository = userProjectRepo;
+        this.teamProjectRepository = teamProjectRepository;
+
         this.taskRepository = taskRepo;
 
     }
@@ -50,6 +51,9 @@ public abstract class AbstractTemplate implements Template {
                 .name(dto.getName())
                 .templateType(getTemplateType())
 //                .features(getFeatureKeys()) // extract keys only
+                .orgId(dto.getOrgId())
+                .createdAt(dto.getCreatedAt())
+                .createdBy(dto.getCreatedBy())
                 .build();
         project = projectRepository.save(project);
         dto.setId(project.getId());
@@ -69,7 +73,7 @@ public abstract class AbstractTemplate implements Template {
             }
         } else {
             // Member → fetch projects via teamIds mapping
-            List<Project> projects = userProjectRepository.findProjectsByTeamIds(teamIds);
+            List<Project> projects = teamProjectRepository.findProjectsByTeamIdsAndOrgId(teamIds,orgId);
             for (Project p : projects) {
                 result.add(new ProjectDTO(p.getId(), p.getName(), p.getTemplateType(), p.getFeatures()));
             }
@@ -134,39 +138,39 @@ public abstract class AbstractTemplate implements Template {
 //        Story s = stories.get(0);
 //        return new TaskDTO(s.getId(), s.getProjectId(), s.getSprintId(), s.getTitle(), s.getDescription(), s.getStatus(), s.getStoryPoints());
 //    }
+//======================Not Importent======================================
+//    @Override
+//    public UserProjectDTO createUserProject(ProjectDTO dto, UserProjectRequestDTO userDTO) {
+//        UserProject userProject = UserProject.builder()
+//                .projectId(dto.getId())
+//                .userId(userDTO.getUserId())
+//                .role(userDTO.getRole())
+//                .build();
+//        userProjectRepository.save(userProject);
+//        return new UserProjectDTO(dto.getId(), userDTO.getUserId(), userDTO.getRole());
+//    }
 
-    @Override
-    public UserProjectDTO createUserProject(ProjectDTO dto, UserProjectRequestDTO userDTO) {
-        UserProject userProject = UserProject.builder()
-                .projectId(dto.getId())
-                .userId(userDTO.getUserId())
-                .role(userDTO.getRole())
-                .build();
-        userProjectRepository.save(userProject);
-        return new UserProjectDTO(dto.getId(), userDTO.getUserId(), userDTO.getRole());
-    }
+//    @Override
+//    public List<UserProjectDTO> getUsersOfProject(ProjectDTO dto) {
+//        List<UserProject> entities = TeamProjectRepository.findByProjectId(dto.getId());
+//        List<UserProjectDTO> list = new ArrayList<>();
+//        for (UserProject entity : entities) {
+//            list.add(new UserProjectDTO(entity.getProjectId(), entity.getUserId(), entity.getRole()));
+//        }
+//        return list;
+//    }
 
-    @Override
-    public List<UserProjectDTO> getUsersOfProject(ProjectDTO dto) {
-        List<UserProject> entities = userProjectRepository.findByProjectId(dto.getId());
-        List<UserProjectDTO> list = new ArrayList<>();
-        for (UserProject entity : entities) {
-            list.add(new UserProjectDTO(entity.getProjectId(), entity.getUserId(), entity.getRole()));
-        }
-        return list;
-    }
-
-    @Override
-    public List<ProjectDTO> getProjectsOfUser(Long userId) {
-        List<UserProject> userProjects = userProjectRepository.findByUserId(userId);
-        List<ProjectDTO> result = new ArrayList<>();
-        for (UserProject up : userProjects) {
-            Project project = projectRepository.findById(up.getProjectId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
-            result.add(new ProjectDTO(project.getId(), project.getName(), project.getTemplateType(), project.getFeatures()));
-        }
-        return result;
-    }
+//    @Override
+//    public List<ProjectDTO> getProjectsOfUser(Long userId) {
+//        List<UserProject> userProjects = userProjectRepository.findByUserId(userId);
+//        List<ProjectDTO> result = new ArrayList<>();
+//        for (UserProject up : userProjects) {
+//            Project project = projectRepository.findById(up.getProjectId())
+//                    .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
+//            result.add(new ProjectDTO(project.getId(), project.getName(), project.getTemplateType(), project.getFeatures()));
+//        }
+//        return result;
+//    }
 
 
     @Override

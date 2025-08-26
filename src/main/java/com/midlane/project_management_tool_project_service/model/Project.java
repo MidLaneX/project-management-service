@@ -53,7 +53,9 @@ public class Project {
     private String name;
     private String type;
     private String templateType;
-    private Long org_id;
+
+    @Column(name = "org_id") // DB column is org_id, but Java field is orgId
+    private Long orgId;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "project_features", joinColumns = @JoinColumn(name = "project_id"))
@@ -61,7 +63,7 @@ public class Project {
     private List<String> features;
 
     // Audit columns
-    private String createdBy; // could store userId or username
+    private String createdBy;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

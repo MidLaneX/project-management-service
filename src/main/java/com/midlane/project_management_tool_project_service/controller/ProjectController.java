@@ -40,24 +40,24 @@ public class ProjectController {
     }
 
 
-    @PostMapping("/createUserOfProjects")
-    public ResponseEntity<UserProjectDTO> createUserProjects(@RequestBody CreateUserProjectRequestDTO requestDTO) {
-        return  ResponseEntity.ok(projectService.createUserProject(requestDTO.getProjectDTO(),requestDTO.getUserProjectRequestDTO()));
-    }
-
-    @GetMapping("/usersOfProject")
-    public ResponseEntity<List<UserProjectDTO>> getUserProject(@RequestParam ProjectDTO projectDTO) {
-//        ProjectDTO requestDTO = new ProjectDTO();
-//        requestDTO.setId(id);
-//        requestDTO.setTemplateType(templateType);
-        return ResponseEntity.ok(projectService.getUsersOfProject(projectDTO));
-    }
-
-
-    @GetMapping("/projectsOfUser")
-    public ResponseEntity<List<ProjectDTO>> getProjectsOfUser(@RequestParam Long userId ,@RequestParam String templateType) {
-        return ResponseEntity.ok(projectService.getProjectsOfUser(userId, templateType));
-    }
+//    @PostMapping("/createUserOfProjects")
+//    public ResponseEntity<UserProjectDTO> createUserProjects(@RequestBody CreateUserProjectRequestDTO requestDTO) {
+//        return  ResponseEntity.ok(projectService.createUserProject(requestDTO.getProjectDTO(),requestDTO.getUserProjectRequestDTO()));
+//    }
+//
+//    @GetMapping("/usersOfProject")
+//    public ResponseEntity<List<UserProjectDTO>> getUserProject(@RequestParam ProjectDTO projectDTO) {
+////        ProjectDTO requestDTO = new ProjectDTO();
+////        requestDTO.setId(id);
+////        requestDTO.setTemplateType(templateType);
+//        return ResponseEntity.ok(projectService.getUsersOfProject(projectDTO));
+//    }
+//
+//
+//    @GetMapping("/projectsOfUser")
+//    public ResponseEntity<List<ProjectDTO>> getProjectsOfUser(@RequestParam Long userId ,@RequestParam String templateType) {
+//        return ResponseEntity.ok(projectService.getProjectsOfUser(userId, templateType));
+//    }
 
 
 

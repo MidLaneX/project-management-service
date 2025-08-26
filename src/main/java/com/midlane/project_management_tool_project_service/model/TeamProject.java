@@ -10,7 +10,8 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "team_projects")
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -20,10 +21,13 @@ public class TeamProject {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long teamId;  // comes from UserService
-    private Long projectId;  // FK to Project
+    @Column(name = "team_id")
+    private Long teamId;
+
+    @Column(name = "project_id", insertable = false, updatable = false)
+    private Long projectId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "projectId", insertable = false, updatable = false)
+    @JoinColumn(name = "project_id") // no insertable=false, updatable=false here
     private Project project;
 }

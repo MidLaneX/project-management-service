@@ -14,9 +14,9 @@ public interface Template {
     List<FeatureDescriptor> getAvailableFeatures();
     ProjectDTO createProject(ProjectDTO dto);
     ProjectDTO getProject(Long projectId);
-    UserProjectDTO createUserProject(ProjectDTO projectDTO, UserProjectRequestDTO userProjectRequestDTO);
-    List<UserProjectDTO> getUsersOfProject(ProjectDTO projectDTO);
-    List<ProjectDTO> getProjectsOfUser(Long userId);
+//    UserProjectDTO createUserProject(ProjectDTO projectDTO, UserProjectRequestDTO userProjectRequestDTO);
+//    List<UserProjectDTO> getUsersOfProject(ProjectDTO projectDTO);
+//    List<ProjectDTO> getProjectsOfUser(Long userId);
     ProjectDTO updateProject(Long projectId, ProjectDTO dto);
     void deleteProject(Long projectId);
     //=====New=============

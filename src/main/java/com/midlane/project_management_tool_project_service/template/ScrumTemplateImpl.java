@@ -6,9 +6,10 @@ import com.midlane.project_management_tool_project_service.model.Project;
 import com.midlane.project_management_tool_project_service.model.featureItemModel.Sprint;
 import com.midlane.project_management_tool_project_service.repository.ProjectRepository;
 import com.midlane.project_management_tool_project_service.repository.TaskRepository;
+import com.midlane.project_management_tool_project_service.repository.TeamProjectRepository;
 import com.midlane.project_management_tool_project_service.repository.featureRepository.SprintRepository;
 import com.midlane.project_management_tool_project_service.repository.featureRepository.StoryRepository;
-import com.midlane.project_management_tool_project_service.repository.UserProjectRepository;
+
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -30,9 +31,9 @@ public class ScrumTemplateImpl extends AbstractTemplate {
     public ScrumTemplateImpl(ProjectRepository projectRepo,
                              SprintRepository sprintRepo,
                              StoryRepository storyRepo,
-                             UserProjectRepository userProjectRepo,
+                             TeamProjectRepository teamProjectRepository,
                              TaskRepository taskRepo) {
-        super(projectRepo, sprintRepo, storyRepo, userProjectRepo, taskRepo);
+        super(projectRepo, sprintRepo, storyRepo, teamProjectRepository, taskRepo);
     }
 
     @Override

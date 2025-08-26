@@ -36,21 +36,21 @@ public class ProjectService {
 
 
 
-//    public TaskDTO getStory(ProjectDTO dto) {
-//        return templateFactory.getTemplate(dto.getTemplateType()).getStory(dto);
+    public TaskDTO getStory(ProjectDTO dto) {
+        return templateFactory.getTemplate(dto.getTemplateType()).getStory(dto);
+    }
+//
+//    public UserProjectDTO createUserProject(ProjectDTO projectDTO, UserProjectRequestDTO userProjectDTO) {
+//        return templateFactory.getTemplate(projectDTO.getTemplateType()).createUserProject(projectDTO, userProjectDTO);
 //    }
-
-    public UserProjectDTO createUserProject(ProjectDTO projectDTO, UserProjectRequestDTO userProjectDTO) {
-        return templateFactory.getTemplate(projectDTO.getTemplateType()).createUserProject(projectDTO, userProjectDTO);
-    }
-
-    public List<UserProjectDTO> getUsersOfProject(ProjectDTO projectDTO) {
-        return templateFactory.getTemplate(projectDTO.getTemplateType()).getUsersOfProject(projectDTO);
-    }
-
-    public List<ProjectDTO> getProjectsOfUser(Long userId, String templateType) {
-        return templateFactory.getTemplate(templateType).getProjectsOfUser(userId);
-    }
+//
+//    public List<UserProjectDTO> getUsersOfProject(ProjectDTO projectDTO) {
+//        return templateFactory.getTemplate(projectDTO.getTemplateType()).getUsersOfProject(projectDTO);
+//    }
+//
+//    public List<ProjectDTO> getProjectsOfUser(Long userId, String templateType) {
+//        return templateFactory.getTemplate(templateType).getProjectsOfUser(userId);
+//    }
 
     public List<FeatureDescriptor> getTemplateFeatures(String templateType) {
         return templateFactory.getTemplate(templateType).getAvailableFeatures();
