@@ -49,13 +49,35 @@ public abstract class AbstractTemplate implements Template {
         Project project = Project.builder()
                 .name(dto.getName())
                 .templateType(getTemplateType())
-                .features(getFeatureKeys()) // extract keys only
+//                .features(getFeatureKeys()) // extract keys only
                 .build();
         project = projectRepository.save(project);
         dto.setId(project.getId());
         dto.setFeatures(project.getFeatures());
         return dto;
     }
+
+    @Override
+    public List<ProjectDTO> getProjectsForUser(Long userId, Long orgId, String role, List<Long> teamIds) {
+        List<ProjectDTO> result = new ArrayList<>();
+
+        if ("ADMIN".equalsIgnoreCase(role)) {
+            // Admin → fetch all projects in org
+            List<Project> projects = projectRepository.findByOrgId(orgId);
+            for (Project p : projects) {
+                result.add(new ProjectDTO(p.getId(), p.getName(), p.getTemplateType(), p.getFeatures()));
+            }
+        } else {
+            // Member → fetch projects via teamIds mapping
+            List<Project> projects = userProjectRepository.findProjectsByTeamIds(teamIds);
+            for (Project p : projects) {
+                result.add(new ProjectDTO(p.getId(), p.getName(), p.getTemplateType(), p.getFeatures()));
+            }
+        }
+
+        return result;
+    }
+
 
     @Override
     public ProjectDTO getProject(Long projectId) {
@@ -70,6 +92,34 @@ public abstract class AbstractTemplate implements Template {
                 getFeatureKeys()
         );
     }
+
+    @Override
+    public ProjectDTO updateProject(Long projectId, ProjectDTO dto) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
+
+        // update allowed fields
+        if (dto.getName() != null) project.setName(dto.getName());
+        if (dto.getFeatures() != null) project.setFeatures(dto.getFeatures());
+
+        project = projectRepository.save(project);
+
+        return new ProjectDTO(
+                project.getId(),
+                project.getName(),
+                project.getTemplateType(),
+                project.getFeatures()
+        );
+    }
+
+    @Override
+    public void deleteProject(Long projectId) {
+        if (!projectRepository.existsById(projectId)) {
+            throw new ResourceNotFoundException("Project not found");
+        }
+        projectRepository.deleteById(projectId);
+    }
+
 
 
 

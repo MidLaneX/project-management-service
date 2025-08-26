@@ -17,6 +17,12 @@ public class ProjectService {
     public ProjectDTO createProject(ProjectDTO dto, String templateType) {
         return templateFactory.getTemplate(templateType).createProject(dto);
     }
+  //==============new==================================
+    public List<ProjectDTO> getProjectsForUser(Long userId, Long orgId, String role, List<Long> teamIds, String templateType) {
+        return templateFactory.getTemplate(templateType)
+                .getProjectsForUser(userId, orgId, role, teamIds);
+    }
+
 
     public ProjectDTO getProject(Long projectId, String templateType) {
         return templateFactory.getTemplate(templateType).getProject(projectId);
@@ -48,6 +54,13 @@ public class ProjectService {
 
     public List<FeatureDescriptor> getTemplateFeatures(String templateType) {
         return templateFactory.getTemplate(templateType).getAvailableFeatures();
+    }
+    public ProjectDTO updateProject(Long projectId, String templateType, ProjectDTO dto) {
+        return templateFactory.getTemplate(templateType).updateProject(projectId, dto);
+    }
+
+    public void deleteProject(Long projectId, String templateType) {
+        templateFactory.getTemplate(templateType).deleteProject(projectId);
     }
 
 

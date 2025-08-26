@@ -24,7 +24,7 @@ public class ScrumTemplateImpl extends AbstractTemplate {
             new FeatureDescriptor("sprint", "Sprint Planning"),
             new FeatureDescriptor("scrum_board", "Task Board"),
             new FeatureDescriptor("estimation", "Sprint Reports"),
-            new FeatureDescriptor("non", "Sprint Reports")
+            new FeatureDescriptor("timeline", "Sprint TimeLine")
     );
 
     public ScrumTemplateImpl(ProjectRepository projectRepo,
@@ -57,7 +57,7 @@ public class ScrumTemplateImpl extends AbstractTemplate {
         return null;
     }
 
-
+    @Override
     public SprintDTO createSprint(Long projectId, SprintDTO sprintDTO) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with ID " + projectId));

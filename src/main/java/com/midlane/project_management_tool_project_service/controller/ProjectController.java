@@ -26,6 +26,19 @@ public class ProjectController {
     public ResponseEntity<ProjectDTO> getProjectByID(@PathVariable Long projectId,@PathVariable String templateType) {
         return ResponseEntity.ok(projectService.getProject(projectId,templateType));
     }
+    @GetMapping("/user-projects")
+    public ResponseEntity<List<ProjectDTO>> getProjectsForUser(
+            @RequestParam Long userId,
+            @RequestParam Long orgId,
+            @RequestParam String role, // from UserService
+            @RequestParam(required = false) List<Long> teamIds,
+            @RequestParam String templateType) {
+
+        return ResponseEntity.ok(
+                projectService.getProjectsForUser(userId, orgId, role, teamIds, templateType)
+        );
+    }
+
 
     @PostMapping("/createUserOfProjects")
     public ResponseEntity<UserProjectDTO> createUserProjects(@RequestBody CreateUserProjectRequestDTO requestDTO) {
@@ -58,4 +71,22 @@ public class ProjectController {
 //    public ResponseEntity<TaskDTO> getStory(@RequestBody ProjectDTO dto) {
 //        return ResponseEntity.ok(projectService.getStory(dto));
 //    }
+// Update project
+@PutMapping("/{projectId}/{templateType}")
+public ResponseEntity<ProjectDTO> updateProject(
+        @PathVariable Long projectId,
+        @PathVariable String templateType,
+        @RequestBody ProjectDTO dto) {
+    return ResponseEntity.ok(projectService.updateProject(projectId, templateType, dto));
+}
+
+    // Delete project
+    @DeleteMapping("/{projectId}/{templateType}")
+    public ResponseEntity<Void> deleteProject(
+            @PathVariable Long projectId,
+            @PathVariable String templateType) {
+        projectService.deleteProject(projectId, templateType);
+        return ResponseEntity.noContent().build();
+    }
+
 }

@@ -17,6 +17,12 @@ public interface Template {
     UserProjectDTO createUserProject(ProjectDTO projectDTO, UserProjectRequestDTO userProjectRequestDTO);
     List<UserProjectDTO> getUsersOfProject(ProjectDTO projectDTO);
     List<ProjectDTO> getProjectsOfUser(Long userId);
+    ProjectDTO updateProject(Long projectId, ProjectDTO dto);
+    void deleteProject(Long projectId);
+    //=====New=============
+    List<ProjectDTO> getProjectsForUser(Long userId, Long orgId, String role, List<Long> teamIds);
+
+
 
     TaskDTO getStory(ProjectDTO dto);
     TaskDTO createStory(Long projectId, TaskDTO taskDTO);
