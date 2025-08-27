@@ -6,9 +6,10 @@ import com.midlane.project_management_tool_project_service.model.Project;
 import com.midlane.project_management_tool_project_service.model.featureItemModel.Sprint;
 import com.midlane.project_management_tool_project_service.repository.ProjectRepository;
 import com.midlane.project_management_tool_project_service.repository.TaskRepository;
+import com.midlane.project_management_tool_project_service.repository.TeamProjectRepository;
 import com.midlane.project_management_tool_project_service.repository.featureRepository.SprintRepository;
 import com.midlane.project_management_tool_project_service.repository.featureRepository.StoryRepository;
-import com.midlane.project_management_tool_project_service.repository.UserProjectRepository;
+
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -18,8 +19,21 @@ import java.util.List;
 @Component
 public class ScrumTemplateImpl extends AbstractTemplate {
 
-    public ScrumTemplateImpl(ProjectRepository projectRepo, SprintRepository sprintRepo, StoryRepository storyRepo, UserProjectRepository userProjectRepo, TaskRepository taskRepo) {
-        super(projectRepo, sprintRepo, storyRepo, userProjectRepo,taskRepo);
+
+    private static final List<FeatureDescriptor> SCRUM_FEATURES = List.of(
+            new FeatureDescriptor("backlog", "Backlog Management"),
+            new FeatureDescriptor("sprint", "Sprint Planning"),
+            new FeatureDescriptor("scrum_board", "Task Board"),
+            new FeatureDescriptor("estimation", "Sprint Reports"),
+            new FeatureDescriptor("timeline", "Sprint TimeLine")
+    );
+
+    public ScrumTemplateImpl(ProjectRepository projectRepo,
+                             SprintRepository sprintRepo,
+                             StoryRepository storyRepo,
+                             TeamProjectRepository teamProjectRepository,
+                             TaskRepository taskRepo) {
+        super(projectRepo, sprintRepo, storyRepo, teamProjectRepository, taskRepo);
     }
 
     @Override
@@ -29,20 +43,22 @@ public class ScrumTemplateImpl extends AbstractTemplate {
 
     @Override
     public List<FeatureDescriptor> getAvailableFeatures() {
-        return List.of(
-                new FeatureDescriptor("backlog", "Product Backlog"),
-                new FeatureDescriptor("summary", "Project Summary"),
-                new FeatureDescriptor("timeline", "Timeline"),
-                new FeatureDescriptor("board", "Scrum Board")
-        );
+        return SCRUM_FEATURES;
     }
 
+
+    private static final List<FeatureDescriptor> FEATURES = List.of(
+            new FeatureDescriptor("backlog", "Backlog Management"),
+            new FeatureDescriptor("sprint", "Sprint Planning"),
+            new FeatureDescriptor("board", "Task Board"),
+            new FeatureDescriptor("report", "Sprint Reports")
+    );
     @Override
     public TaskDTO getStory(ProjectDTO dto) {
         return null;
     }
 
-
+    @Override
     public SprintDTO createSprint(Long projectId, SprintDTO sprintDTO) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with ID " + projectId));
