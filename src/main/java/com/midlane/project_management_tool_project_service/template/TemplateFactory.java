@@ -2,19 +2,21 @@ package com.midlane.project_management_tool_project_service.template;
 
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
-
 public class TemplateFactory {
 
     private final Map<String, Template> templateMap;
 
     public TemplateFactory(List<Template> templates) {
-        this.templateMap = new HashMap<>();
-        for (Template template : templates) {
-            this.templateMap.put(template.getTemplateType().toLowerCase(), template);
-        }
+        this.templateMap = templates.stream()
+                .collect(Collectors.toMap(
+                        t -> t.getTemplateType().toLowerCase(),
+                        t -> t
+                ));
     }
 
     public Template getTemplate(String type) {
