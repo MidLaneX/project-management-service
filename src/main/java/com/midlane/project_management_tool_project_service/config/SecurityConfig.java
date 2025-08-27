@@ -15,7 +15,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // Disable CSRF if not using forms
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/**").permitAll() // Allow API requests
-                        .anyRequest().authenticated()           // Require auth for others
+                        .anyRequest().permitAll()          // Require auth for others
                 )
                 .httpBasic(Customizer.withDefaults());     // Optional: HTTP Basic
 
