@@ -20,7 +20,7 @@ public interface Template {
     ProjectDTO updateProject(Long projectId, ProjectDTO dto);
     void deleteProject(Long projectId);
     //=====New=============
-    List<ProjectDTO> getProjectsForUser(Long userId, Long orgId, String role, List<Long> teamIds);
+    List<ProjectDTO> getProjectsForUser(Long userId, Long orgId);
 
 
 

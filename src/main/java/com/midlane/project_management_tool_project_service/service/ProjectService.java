@@ -18,10 +18,11 @@ public class ProjectService {
         return templateFactory.getTemplate(templateType).createProject(dto);
     }
   //==============new==================================
-    public List<ProjectDTO> getProjectsForUser(Long userId, Long orgId, String role, List<Long> teamIds, String templateType) {
-        return templateFactory.getTemplate(templateType)
-                .getProjectsForUser(userId, orgId, role, teamIds);
-    }
+  public List<ProjectDTO> getProjectsForUser(Long userId, Long orgId, String templateType) {
+      return templateFactory.getTemplate(templateType)
+              .getProjectsForUser(userId, orgId); // only these two params
+  }
+
 
 
     public ProjectDTO getProject(Long projectId, String templateType) {

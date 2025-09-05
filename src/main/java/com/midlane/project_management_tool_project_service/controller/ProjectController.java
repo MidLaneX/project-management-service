@@ -30,12 +30,10 @@ public class ProjectController {
     public ResponseEntity<List<ProjectDTO>> getProjectsForUser(
             @RequestParam Long userId,
             @RequestParam Long orgId,
-            @RequestParam String role, // from UserService
-            @RequestParam(required = false) List<Long> teamIds,
             @RequestParam String templateType) {
 
         return ResponseEntity.ok(
-                projectService.getProjectsForUser(userId, orgId, role, teamIds, templateType)
+                projectService.getProjectsForUser(userId, orgId, templateType)
         );
     }
 
