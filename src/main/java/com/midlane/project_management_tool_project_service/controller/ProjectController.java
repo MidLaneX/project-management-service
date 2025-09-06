@@ -18,7 +18,7 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @PostMapping
-    public ResponseEntity<ProjectDTO> createProject(@RequestBody ProjectDTO dto, @RequestParam(defaultValue = "scrum") String template) {
+    public ResponseEntity<ProjectDTO> createProject(@RequestBody ProjectDTO dto, @RequestParam String template) {
         return ResponseEntity.ok(projectService.createProject(dto, template));
     }
 

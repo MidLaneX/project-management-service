@@ -20,7 +20,7 @@ public class ProjectService {
   //==============new==================================
   public List<ProjectDTO> getProjectsForUser(Long userId, Long orgId, String templateType) {
       return templateFactory.getTemplate(templateType)
-              .getProjectsForUser(userId, orgId); // only these two params
+              .getProjectsForUser(userId, orgId);
   }
 
 
