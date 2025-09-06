@@ -1,4 +1,4 @@
-package com.midlane.project_management_tool_project_service.template;
+package com.midlane.project_management_tool_project_service.template.implementations;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,4 +1,4 @@
-package com.midlane.project_management_tool_project_service.template;
+package com.midlane.project_management_tool_project_service.template.implementations;
 
 import com.midlane.project_management_tool_project_service.dto.*;
 import com.midlane.project_management_tool_project_service.exception.ResourceNotFoundException;
@@ -12,6 +12,7 @@ import com.midlane.project_management_tool_project_service.repository.UserProjec
 import com.midlane.project_management_tool_project_service.repository.featureRepository.SprintRepository;
 import com.midlane.project_management_tool_project_service.repository.featureRepository.StoryRepository;
 
+import com.midlane.project_management_tool_project_service.template.SprintCapableTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Component
-public class ScrumTemplateImpl extends AbstractTemplate {
+public class ScrumTemplateImpl extends AbstractTemplate implements SprintCapableTemplate {
 
 
     private static final List<FeatureDescriptor> SCRUM_FEATURES = List.of(
@@ -61,7 +62,7 @@ public class ScrumTemplateImpl extends AbstractTemplate {
         return null;
     }
 
-    @Override
+
     public SprintDTO createSprint(Long projectId, SprintDTO sprintDTO) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with ID " + projectId));
@@ -96,14 +97,14 @@ public class ScrumTemplateImpl extends AbstractTemplate {
         return sprintDTO;
     }
 
-    @Override
+
     public SprintDTO getSprint(Long projectId) {
         Sprint sprint = sprintRepository.findTopByProjectIdOrderByStartDateDesc(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("No sprint found"));
         return new SprintDTO(sprint.getId(), projectId, sprint.getName(), sprint.getStartDate(), sprint.getEndDate(), sprint.getGoal(),sprint.getStatus());
     }
 
-    @Override
+
     public List<SprintDTO> getAllSprint(Long projectId) {
         List<Sprint> sprints = sprintRepository.findByProjectId(projectId);
 
@@ -129,7 +130,7 @@ public class ScrumTemplateImpl extends AbstractTemplate {
         return sprintDTOs;
     }
 
-    @Override
+
     public SprintDTO updateSprint(Long projectId, Long sprintId, SprintDTO sprintDTO) {
         Sprint sprint = sprintRepository.findById(sprintId)
                 .orElseThrow(() -> new ResourceNotFoundException("Sprint not found with ID " + sprintId));
@@ -171,7 +172,7 @@ public class ScrumTemplateImpl extends AbstractTemplate {
         );
     }
 
-    @Override
+
 
     public void deleteSprint(Long projectId, Long sprintId) {
         Sprint sprint = sprintRepository.findById(sprintId)

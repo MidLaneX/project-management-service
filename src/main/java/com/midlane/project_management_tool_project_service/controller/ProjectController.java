@@ -33,7 +33,7 @@ public class ProjectController {
             @RequestParam String templateType) {
 
         return ResponseEntity.ok(
-                projectService.getProjectsForUser(userId, orgId, templateType)
+                projectService.getProjectsForUser(userId, orgId,templateType)
         );
     }
 

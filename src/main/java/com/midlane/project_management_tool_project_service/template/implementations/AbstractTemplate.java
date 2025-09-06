@@ -1,4 +1,4 @@
-package com.midlane.project_management_tool_project_service.template;
+package com.midlane.project_management_tool_project_service.template.implementations;
 
 import com.midlane.project_management_tool_project_service.dto.*;
 import com.midlane.project_management_tool_project_service.exception.ResourceNotFoundException;
@@ -6,8 +6,7 @@ import com.midlane.project_management_tool_project_service.model.*;
 import com.midlane.project_management_tool_project_service.model.featureItemModel.*;
 import com.midlane.project_management_tool_project_service.repository.*;
 import com.midlane.project_management_tool_project_service.repository.featureRepository.*;
-
-
+import com.midlane.project_management_tool_project_service.template.Template;
 
 
 import java.util.ArrayList;
@@ -317,12 +316,12 @@ public abstract class AbstractTemplate implements Template {
     }
 
 
-
-    public abstract SprintDTO getSprint(Long projectId);
-
-    public abstract List<SprintDTO> getAllSprint(Long projectId);
-
-    public abstract SprintDTO updateSprint(Long projectId, Long sprintId, SprintDTO sprintDTO);
-
-    public abstract void deleteSprint(Long projectId, Long sprintId);
+//
+//    public abstract SprintDTO getSprint(Long projectId);
+//
+//    public abstract List<SprintDTO> getAllSprint(Long projectId);
+//
+//    public abstract SprintDTO updateSprint(Long projectId, Long sprintId, SprintDTO sprintDTO);
+//
+//    public abstract void deleteSprint(Long projectId, Long sprintId);
 }
