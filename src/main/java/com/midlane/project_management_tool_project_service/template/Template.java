@@ -2,11 +2,10 @@
 package com.midlane.project_management_tool_project_service.template;
 
 import com.midlane.project_management_tool_project_service.dto.*;
+import com.midlane.project_management_tool_project_service.template.implementations.FeatureDescriptor;
 
 import java.util.List;
 
-import com.midlane.project_management_tool_project_service.dto.*;
-import java.util.List;
 
 public interface Template {
     String getTemplateType();
@@ -20,7 +19,7 @@ public interface Template {
     ProjectDTO updateProject(Long projectId, ProjectDTO dto);
     void deleteProject(Long projectId);
     //=====New=============
-    List<ProjectDTO> getProjectsForUser(Long userId, Long orgId, String role, List<Long> teamIds);
+    List<ProjectDTO> getProjectsForUser(Long userId, Long orgId);
 
 
 
@@ -36,9 +35,9 @@ public interface Template {
 
 
 
-    SprintDTO getSprint(Long  projectId);
-    SprintDTO createSprint(Long projectId, SprintDTO sprintDTO);
-    List<SprintDTO> getAllSprint(Long projectId);
-    SprintDTO updateSprint(Long projectId, Long sprintId, SprintDTO sprintDTO);
-    void deleteSprint(Long projectId, Long sprintId);
+//    SprintDTO getSprint(Long  projectId);
+//    SprintDTO createSprint(Long projectId, SprintDTO sprintDTO);
+//    List<SprintDTO> getAllSprint(Long projectId);
+//    SprintDTO updateSprint(Long projectId, Long sprintId, SprintDTO sprintDTO);
+//    void deleteSprint(Long projectId, Long sprintId);
 }

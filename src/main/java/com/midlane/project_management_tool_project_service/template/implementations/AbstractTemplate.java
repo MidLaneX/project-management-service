@@ -1,4 +1,4 @@
-package com.midlane.project_management_tool_project_service.template;
+package com.midlane.project_management_tool_project_service.template.implementations;
 
 import com.midlane.project_management_tool_project_service.dto.*;
 import com.midlane.project_management_tool_project_service.exception.ResourceNotFoundException;
@@ -6,8 +6,7 @@ import com.midlane.project_management_tool_project_service.model.*;
 import com.midlane.project_management_tool_project_service.model.featureItemModel.*;
 import com.midlane.project_management_tool_project_service.repository.*;
 import com.midlane.project_management_tool_project_service.repository.featureRepository.*;
-
-
+import com.midlane.project_management_tool_project_service.template.Template;
 
 
 import java.util.ArrayList;
@@ -21,6 +20,8 @@ public abstract class AbstractTemplate implements Template {
     protected final StoryRepository storyRepository;
     protected final TeamProjectRepository teamProjectRepository;
     protected  final  TaskRepository taskRepository;
+    protected  final UserProjectRepository userProjectRepository;
+
 
 
 
@@ -29,14 +30,14 @@ public abstract class AbstractTemplate implements Template {
                                SprintRepository sprintRepo,
                                StoryRepository storyRepo,
                                TeamProjectRepository teamProjectRepository,
-                               TaskRepository taskRepo) {
+                               TaskRepository taskRepo,
+                               UserProjectRepository userProjectRepository) {
         this.projectRepository = projectRepo;
         this.sprintRepository = sprintRepo;
         this.storyRepository = storyRepo;
         this.teamProjectRepository = teamProjectRepository;
-
         this.taskRepository = taskRepo;
-
+        this.userProjectRepository = userProjectRepository;
     }
 
     @Override
@@ -61,19 +62,31 @@ public abstract class AbstractTemplate implements Template {
         return dto;
     }
 
+
     @Override
-    public List<ProjectDTO> getProjectsForUser(Long userId, Long orgId, String role, List<Long> teamIds) {
+    public List<ProjectDTO> getProjectsForUser(Long userId, Long orgId) {
         List<ProjectDTO> result = new ArrayList<>();
 
-        if ("ADMIN".equalsIgnoreCase(role)) {
+        //  Check if user is ADMIN in this org
+        List<UserProject> adminAssignments = userProjectRepository.findByUserIdAndOrgIdAndRole(userId, orgId, "ADMIN");
+        if (!adminAssignments.isEmpty()) {
             // Admin → fetch all projects in org
             List<Project> projects = projectRepository.findByOrgId(orgId);
             for (Project p : projects) {
                 result.add(new ProjectDTO(p.getId(), p.getName(), p.getTemplateType(), p.getFeatures()));
             }
-        } else {
-            // Member → fetch projects via teamIds mapping
-            List<Project> projects = teamProjectRepository.findProjectsByTeamIdsAndOrgId(teamIds,orgId);
+            return result;
+        }
+
+        //  Non-admin → fetch projects assigned to user's teams
+        List<UserProject> assignments = userProjectRepository.findByUserIdAndOrgId(userId, orgId);
+        List<Long> projectIds = assignments.stream()
+                .map(UserProject::getProjectId)
+                .distinct()
+                .toList();
+
+        if (!projectIds.isEmpty()) {
+            List<Project> projects = projectRepository.findAllById(projectIds);
             for (Project p : projects) {
                 result.add(new ProjectDTO(p.getId(), p.getName(), p.getTemplateType(), p.getFeatures()));
             }
@@ -81,6 +94,7 @@ public abstract class AbstractTemplate implements Template {
 
         return result;
     }
+
 
 
     @Override
@@ -302,12 +316,12 @@ public abstract class AbstractTemplate implements Template {
     }
 
 
-
-    public abstract SprintDTO getSprint(Long projectId);
-
-    public abstract List<SprintDTO> getAllSprint(Long projectId);
-
-    public abstract SprintDTO updateSprint(Long projectId, Long sprintId, SprintDTO sprintDTO);
-
-    public abstract void deleteSprint(Long projectId, Long sprintId);
+//
+//    public abstract SprintDTO getSprint(Long projectId);
+//
+//    public abstract List<SprintDTO> getAllSprint(Long projectId);
+//
+//    public abstract SprintDTO updateSprint(Long projectId, Long sprintId, SprintDTO sprintDTO);
+//
+//    public abstract void deleteSprint(Long projectId, Long sprintId);
 }

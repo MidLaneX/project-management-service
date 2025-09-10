@@ -1,7 +1,7 @@
 package com.midlane.project_management_tool_project_service.service;
 
 import com.midlane.project_management_tool_project_service.dto.*;
-import com.midlane.project_management_tool_project_service.template.FeatureDescriptor;
+import com.midlane.project_management_tool_project_service.template.implementations.FeatureDescriptor;
 import com.midlane.project_management_tool_project_service.template.TemplateFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,10 +18,11 @@ public class ProjectService {
         return templateFactory.getTemplate(templateType).createProject(dto);
     }
   //==============new==================================
-    public List<ProjectDTO> getProjectsForUser(Long userId, Long orgId, String role, List<Long> teamIds, String templateType) {
-        return templateFactory.getTemplate(templateType)
-                .getProjectsForUser(userId, orgId, role, teamIds);
-    }
+  public List<ProjectDTO> getProjectsForUser(Long userId, Long orgId, String templateType) {
+      return templateFactory.getTemplate(templateType)
+              .getProjectsForUser(userId, orgId);
+  }
+
 
 
     public ProjectDTO getProject(Long projectId, String templateType) {
