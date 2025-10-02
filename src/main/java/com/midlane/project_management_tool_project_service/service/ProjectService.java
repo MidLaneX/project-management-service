@@ -29,6 +29,10 @@ public class ProjectService {
         return templateFactory.getTemplate(templateType).getProject(projectId);
     }
 
+    public List<UserProjectDTO> assignTeamToProject(Long projectId, String templateType, Long teamId) {
+        return templateFactory.getTemplate(templateType).assignTeamToProject(projectId, teamId);
+    }
+
 
 
     public TaskDTO createStory(Long projectId, TaskDTO taskDTO, String templateType) {

@@ -3,7 +3,6 @@ package com.midlane.project_management_tool_project_service.template.implementat
 import com.midlane.project_management_tool_project_service.dto.*;
 import com.midlane.project_management_tool_project_service.repository.ProjectRepository;
 import com.midlane.project_management_tool_project_service.repository.TaskRepository;
-import com.midlane.project_management_tool_project_service.repository.TeamProjectRepository;
 import com.midlane.project_management_tool_project_service.repository.UserProjectRepository;
 import org.springframework.stereotype.Component;
 
@@ -30,9 +29,9 @@ public class TraditionalTemplateImpl extends AbstractTemplate {
 
     public TraditionalTemplateImpl(ProjectRepository projectRepo,
                                    TaskRepository taskRepo,
-                                   TeamProjectRepository teamProjectRepository,
+
                                    UserProjectRepository userProjectRepository) {
-        super(projectRepo, null, null, teamProjectRepository, taskRepo, userProjectRepository);
+        super(projectRepo, null, null, taskRepo, userProjectRepository);
     }
 
     @Override

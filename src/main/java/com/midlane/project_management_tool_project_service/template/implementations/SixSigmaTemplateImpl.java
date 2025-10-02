@@ -22,9 +22,9 @@ public class SixSigmaTemplateImpl extends AbstractTemplate {
 
     public SixSigmaTemplateImpl(ProjectRepository projectRepo,
                                 TaskRepository taskRepo,
-                                TeamProjectRepository teamProjectRepository,
+
                                 UserProjectRepository userProjectRepository) {
-        super(projectRepo, null, null, teamProjectRepository, taskRepo, userProjectRepository);
+        super(projectRepo, null, null,  taskRepo, userProjectRepository);
     }
 
     @Override

@@ -18,7 +18,7 @@ public abstract class AbstractTemplate implements Template {
     protected final ProjectRepository projectRepository;
     protected final SprintRepository sprintRepository;
     protected final StoryRepository storyRepository;
-    protected final TeamProjectRepository teamProjectRepository;
+
     protected  final  TaskRepository taskRepository;
     protected  final UserProjectRepository userProjectRepository;
 
@@ -29,13 +29,13 @@ public abstract class AbstractTemplate implements Template {
     protected AbstractTemplate(ProjectRepository projectRepo,
                                SprintRepository sprintRepo,
                                StoryRepository storyRepo,
-                               TeamProjectRepository teamProjectRepository,
+
                                TaskRepository taskRepo,
                                UserProjectRepository userProjectRepository) {
         this.projectRepository = projectRepo;
         this.sprintRepository = sprintRepo;
         this.storyRepository = storyRepo;
-        this.teamProjectRepository = teamProjectRepository;
+
         this.taskRepository = taskRepo;
         this.userProjectRepository = userProjectRepository;
     }
@@ -51,12 +51,15 @@ public abstract class AbstractTemplate implements Template {
         Project project = Project.builder()
                 .name(dto.getName())
                 .templateType(getTemplateType())
-//                .features(getFeatureKeys()) // extract keys only
+                .features(getFeatureKeys())
                 .orgId(dto.getOrgId())
                 .createdAt(dto.getCreatedAt())
                 .createdBy(dto.getCreatedBy())
                 .build();
         project = projectRepository.save(project);
+
+
+
         dto.setId(project.getId());
         dto.setFeatures(project.getFeatures());
         return dto;
@@ -137,6 +140,39 @@ public abstract class AbstractTemplate implements Template {
         }
         projectRepository.deleteById(projectId);
     }
+    @Override
+    public List<UserProjectDTO> assignTeamToProject(Long projectId, Long teamId) {
+        // 1. Fetch all users in the team
+        List<UserProject> teamUsers = userProjectRepository.findByTeamId(teamId);
+        if (teamUsers.isEmpty()) {
+            throw new ResourceNotFoundException("No users found for teamId " + teamId);
+        }
+
+        // 2. Update each user with the new projectId
+        for (UserProject userProject : teamUsers) {
+            userProject.setProjectId(projectId);
+        }
+
+        // 3. Save all updated records
+        List<UserProject> updatedUsers = userProjectRepository.saveAll(teamUsers);
+
+        // 4. Convert entities to DTOs manually
+        List<UserProjectDTO> result = new ArrayList<>();
+        for (UserProject userProject : updatedUsers) {
+            UserProjectDTO dto = new UserProjectDTO();
+            dto.setId(userProject.getId());
+            dto.setProjectId(userProject.getProjectId());
+            dto.setUserId(userProject.getUserId());
+            dto.setRole(userProject.getRole());
+            result.add(dto);
+        }
+
+        return result;
+    }
+
+
+
+
 
 
 

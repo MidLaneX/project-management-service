@@ -1,11 +1,11 @@
 package com.midlane.project_management_tool_project_service.dto;
 
-import jdk.jshell.Snippet;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.Data;
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class UserProjectDTO {
     private Long id;
@@ -14,9 +14,5 @@ public class UserProjectDTO {
     private String role; // Optional: ADMIN, MEMBER, etc.
 
 
-    public UserProjectDTO(Long projectId, Long userId, String role) {
-        this.projectId = projectId;
-        this.userId = userId;
-        this.role = role;
-    }
+
 }
