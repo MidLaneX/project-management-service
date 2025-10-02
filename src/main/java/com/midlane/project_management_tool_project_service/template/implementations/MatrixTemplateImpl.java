@@ -23,9 +23,9 @@ public class MatrixTemplateImpl extends AbstractTemplate {
 
     public MatrixTemplateImpl(ProjectRepository projectRepo,
                               TaskRepository taskRepo,
-                              TeamProjectRepository teamProjectRepository,
+
                               UserProjectRepository userProjectRepository) {
-        super(projectRepo, null, null, teamProjectRepository, taskRepo, userProjectRepository);
+        super(projectRepo, null, null,  taskRepo, userProjectRepository);
     }
 
     @Override

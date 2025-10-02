@@ -20,7 +20,7 @@ public interface Template {
     void deleteProject(Long projectId);
     //=====New=============
     List<ProjectDTO> getProjectsForUser(Long userId, Long orgId);
-
+    List<UserProjectDTO> assignTeamToProject(Long projectId, Long teamId);
 
 
     TaskDTO getStory(ProjectDTO dto);

@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -33,9 +32,21 @@ public class ProjectController {
             @RequestParam String templateType) {
 
         return ResponseEntity.ok(
-                projectService.getProjectsForUser(userId, orgId,templateType)
+                projectService.getProjectsForUser(userId,orgId,templateType)
         );
     }
+
+    @PostMapping("/{projectId}/assignTeamToProject")
+    public ResponseEntity<List<UserProjectDTO>> assignTeamToProject(
+            @PathVariable Long projectId,
+            @RequestParam String templateType,
+            @RequestParam Long teamId) {
+
+
+        return ResponseEntity.ok(projectService.assignTeamToProject(projectId,templateType,teamId));
+    }
+
+
 
 
 //    @PostMapping("/createUserOfProjects")

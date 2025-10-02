@@ -7,7 +7,6 @@ import com.midlane.project_management_tool_project_service.model.Task;
 import com.midlane.project_management_tool_project_service.model.featureItemModel.Sprint;
 import com.midlane.project_management_tool_project_service.repository.ProjectRepository;
 import com.midlane.project_management_tool_project_service.repository.TaskRepository;
-import com.midlane.project_management_tool_project_service.repository.TeamProjectRepository;
 import com.midlane.project_management_tool_project_service.repository.UserProjectRepository;
 import com.midlane.project_management_tool_project_service.repository.featureRepository.SprintRepository;
 import com.midlane.project_management_tool_project_service.repository.featureRepository.StoryRepository;
@@ -34,10 +33,10 @@ public class ScrumTemplateImpl extends AbstractTemplate implements SprintCapable
     public ScrumTemplateImpl(ProjectRepository projectRepo,
                              SprintRepository sprintRepo,
                              StoryRepository storyRepo,
-                             TeamProjectRepository teamProjectRepository,
+
                              UserProjectRepository userProjectRepository,
                              TaskRepository taskRepo) {
-        super(projectRepo, sprintRepo, storyRepo, teamProjectRepository, taskRepo,userProjectRepository);
+        super(projectRepo, sprintRepo, storyRepo,  taskRepo,userProjectRepository);
     }
 
     @Override

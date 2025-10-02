@@ -22,7 +22,7 @@ public class UserProject {
     @Column(name = "org_id")
     private Long orgId;
 
-    @Column(name = "team_id")
+    @Column(name = "team_id" ,nullable = true)
     private Long teamId;
 
     @Column(name = "project_id")
