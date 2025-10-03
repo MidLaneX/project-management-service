@@ -33,6 +33,10 @@ public class ProjectService {
         return templateFactory.getTemplate(templateType).assignTeamToProject(projectId, teamId);
     }
 
+    public Long getAssignedTeamOfProject(Long projectId,String templateType) {
+        return templateFactory.getTemplate(templateType).getAssignedTeamOfProject(projectId);
+    }
+
 
 
     public TaskDTO createStory(Long projectId, TaskDTO taskDTO, String templateType) {
@@ -60,12 +64,12 @@ public class ProjectService {
     public List<FeatureDescriptor> getTemplateFeatures(String templateType) {
         return templateFactory.getTemplate(templateType).getAvailableFeatures();
     }
-    public ProjectDTO updateProject(Long projectId, String templateType, ProjectDTO dto) {
-        return templateFactory.getTemplate(templateType).updateProject(projectId, dto);
+    public ProjectDTO updateProject(Long userId,Long projectId, String templateType, ProjectDTO dto) {
+        return templateFactory.getTemplate(templateType).updateProject(userId,projectId, dto);
     }
 
-    public void deleteProject(Long projectId, String templateType) {
-        templateFactory.getTemplate(templateType).deleteProject(projectId);
+    public void deleteProject(Long userId,Long projectId, String templateType) {
+        templateFactory.getTemplate(templateType).deleteProject(userId,projectId);
     }
 
 
