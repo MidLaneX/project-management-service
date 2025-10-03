@@ -30,4 +30,6 @@ public class UserProject {
 
     @Column(name = "role")
     private String role; // ADMIN / MEMBER etc.
+
+
 }
