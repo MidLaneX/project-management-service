@@ -121,7 +121,7 @@ public abstract class AbstractTemplate implements Template {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 
-        // ✅Check if user is ADMIN for this org
+        // Check if user is ADMIN for this org
         boolean isAdmin = !userProjectRepository
                 .findByUserIdAndOrgIdAndRole(userId, project.getOrgId(), "ADMIN")
                 .isEmpty();
