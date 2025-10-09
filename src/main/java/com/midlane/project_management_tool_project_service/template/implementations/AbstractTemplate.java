@@ -298,6 +298,7 @@ public abstract class AbstractTemplate implements Template {
                 .assignee(dto.getAssignee())
                 .reporter(dto.getReporter())
                 .dueDate(dto.getDueDate())
+                .epic(dto.getEpic())
                 .priority(dto.getPriority())
                 .status(dto.getStatus())
                 .type(dto.getType())
@@ -307,6 +308,8 @@ public abstract class AbstractTemplate implements Template {
 
         task = taskRepository.save(task);
         dto.setId(task.getId());
+        dto.setCreatedAt(task.getCreatedAt());
+        dto.setUpdatedAt(task.getUpdatedAt());
         return dto;
     }
 
@@ -332,6 +335,7 @@ public abstract class AbstractTemplate implements Template {
         task.setAssignee(updates.getAssignee());
         task.setReporter(updates.getReporter());
         task.setDueDate(updates.getDueDate());
+        task.setEpic(updates.getEpic());
         task.setPriority(updates.getPriority());
         task.setStatus(updates.getStatus());
         task.setType(updates.getType());
@@ -375,10 +379,13 @@ public abstract class AbstractTemplate implements Template {
                 t.getAssignee(),
                 t.getReporter(),
                 t.getDueDate(),
+                t.getEpic(),
                 t.getPriority(),
                 t.getStatus(),
                 t.getType(),
                 t.getStoryPoints(),
+                t.getCreatedAt(),
+                t.getUpdatedAt(),
                 t.getLabels(),
                 List.of() // optional: handle comments if needed
         );
