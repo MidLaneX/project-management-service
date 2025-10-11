@@ -50,6 +50,7 @@ public abstract class AbstractTemplate implements Template {
     public ProjectDTO createProject(ProjectDTO dto) {
         Project project = Project.builder()
                 .name(dto.getName())
+                .type(dto.getType())
                 .templateType(getTemplateType())
                 .features(getFeatureKeys())
                 .orgId(dto.getOrgId())
@@ -76,7 +77,7 @@ public abstract class AbstractTemplate implements Template {
             // Admin → fetch all projects in org
             List<Project> projects = projectRepository.findByOrgId(orgId);
             for (Project p : projects) {
-                result.add(new ProjectDTO(p.getId(), p.getName(), p.getTemplateType(), p.getFeatures()));
+                result.add(new ProjectDTO(p.getId(), p.getName(),p.getType(), p.getTemplateType(), p.getFeatures()));
             }
             return result;
         }
@@ -91,7 +92,7 @@ public abstract class AbstractTemplate implements Template {
         if (!projectIds.isEmpty()) {
             List<Project> projects = projectRepository.findAllById(projectIds);
             for (Project p : projects) {
-                result.add(new ProjectDTO(p.getId(), p.getName(), p.getTemplateType(), p.getFeatures()));
+                result.add(new ProjectDTO(p.getId(), p.getName(),p.getType(), p.getTemplateType(), p.getFeatures()));
             }
         }
 
@@ -109,17 +110,27 @@ public abstract class AbstractTemplate implements Template {
         return new ProjectDTO(
                 project.getId(),
                 project.getName(),
+                project.getType(),
                 project.getTemplateType(),
                 getFeatureKeys()
         );
     }
 
     @Override
-    public ProjectDTO updateProject(Long projectId, ProjectDTO dto) {
+    public ProjectDTO updateProject(Long userId, Long projectId, ProjectDTO dto) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 
-        // update allowed fields
+        // Check if user is ADMIN for this org
+        boolean isAdmin = !userProjectRepository
+                .findByUserIdAndOrgIdAndRole(userId, project.getOrgId(), "ADMIN")
+                .isEmpty();
+
+        if (!isAdmin) {
+            throw new SecurityException("Access denied: Only ADMIN can update this project");
+        }
+
+        // Update allowed fields
         if (dto.getName() != null) project.setName(dto.getName());
         if (dto.getFeatures() != null) project.setFeatures(dto.getFeatures());
 
@@ -128,18 +139,30 @@ public abstract class AbstractTemplate implements Template {
         return new ProjectDTO(
                 project.getId(),
                 project.getName(),
+                project.getType(),
                 project.getTemplateType(),
                 project.getFeatures()
         );
     }
 
     @Override
-    public void deleteProject(Long projectId) {
-        if (!projectRepository.existsById(projectId)) {
-            throw new ResourceNotFoundException("Project not found");
+    public void deleteProject(Long userId, Long projectId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
+
+        //  Check if user is ADMIN for this org
+        boolean isAdmin = !userProjectRepository
+                .findByUserIdAndOrgIdAndRole(userId, project.getOrgId(), "ADMIN")
+                .isEmpty();
+
+        if (!isAdmin) {
+            throw new SecurityException("Access denied: Only ADMIN can delete this project");
         }
+
         projectRepository.deleteById(projectId);
     }
+
+
     @Override
     public List<UserProjectDTO> assignTeamToProject(Long projectId, Long teamId) {
         // 1. Fetch all users in the team
@@ -170,7 +193,17 @@ public abstract class AbstractTemplate implements Template {
         return result;
     }
 
+    @Override
+    public Long getAssignedTeamOfProject(Long projectId) {
 
+        boolean projectExists = userProjectRepository.existsByProjectId(projectId);
+        if (!projectExists) {
+            throw new ResourceNotFoundException("Project with ID " + projectId + " not found");
+        }
+
+
+        return userProjectRepository.findFirstTeamIdByProjectId(projectId);
+    }
 
 
 
@@ -265,6 +298,7 @@ public abstract class AbstractTemplate implements Template {
                 .assignee(dto.getAssignee())
                 .reporter(dto.getReporter())
                 .dueDate(dto.getDueDate())
+                .epic(dto.getEpic())
                 .priority(dto.getPriority())
                 .status(dto.getStatus())
                 .type(dto.getType())
@@ -274,6 +308,8 @@ public abstract class AbstractTemplate implements Template {
 
         task = taskRepository.save(task);
         dto.setId(task.getId());
+        dto.setCreatedAt(task.getCreatedAt());
+        dto.setUpdatedAt(task.getUpdatedAt());
         return dto;
     }
 
@@ -299,6 +335,7 @@ public abstract class AbstractTemplate implements Template {
         task.setAssignee(updates.getAssignee());
         task.setReporter(updates.getReporter());
         task.setDueDate(updates.getDueDate());
+        task.setEpic(updates.getEpic());
         task.setPriority(updates.getPriority());
         task.setStatus(updates.getStatus());
         task.setType(updates.getType());
@@ -342,10 +379,13 @@ public abstract class AbstractTemplate implements Template {
                 t.getAssignee(),
                 t.getReporter(),
                 t.getDueDate(),
+                t.getEpic(),
                 t.getPriority(),
                 t.getStatus(),
                 t.getType(),
                 t.getStoryPoints(),
+                t.getCreatedAt(),
+                t.getUpdatedAt(),
                 t.getLabels(),
                 List.of() // optional: handle comments if needed
         );

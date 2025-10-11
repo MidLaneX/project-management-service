@@ -3,6 +3,7 @@ package com.midlane.project_management_tool_project_service.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -24,12 +25,25 @@ public class Task {
     private String assignee;
     private String reporter;
     private String dueDate;
-
+    private String epic;
     private String priority;
     private String status;
     private String type;
 
     private Integer storyPoints;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    public void prePersist() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 
     @ElementCollection
     private List<String> labels;
