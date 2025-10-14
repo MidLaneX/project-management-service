@@ -22,6 +22,17 @@ COPY src ./src
 # Build the application (dependencies will be downloaded during build)
 RUN ./mvnw clean package -DskipTests -B
 
+
+##------------------------------------------------
+## 🧪 Run unit/integration tests (will fail the build if any test fails)
+#RUN ./mvnw clean test -B
+#
+## 🏗️ Build the jar if tests pass
+#RUN ./mvnw clean package -DskipTests -B
+#
+
+
+#------------------------------------------------
 # Production stage
 FROM eclipse-temurin:21-jre-alpine
 
