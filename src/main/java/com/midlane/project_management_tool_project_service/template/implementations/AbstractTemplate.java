@@ -3,9 +3,9 @@ package com.midlane.project_management_tool_project_service.template.implementat
 import com.midlane.project_management_tool_project_service.dto.*;
 import com.midlane.project_management_tool_project_service.exception.ResourceNotFoundException;
 import com.midlane.project_management_tool_project_service.model.*;
-import com.midlane.project_management_tool_project_service.model.featureItemModel.*;
 import com.midlane.project_management_tool_project_service.repository.*;
 import com.midlane.project_management_tool_project_service.repository.featureRepository.*;
+import com.midlane.project_management_tool_project_service.template.SprintCapableTemplate;
 import com.midlane.project_management_tool_project_service.template.Template;
 
 
@@ -44,7 +44,7 @@ public abstract class AbstractTemplate implements Template {
     public abstract String getTemplateType();
 
     @Override
-    public abstract List<FeatureDescriptor> getAvailableFeatures();
+    public abstract List<SprintCapableTemplate.FeatureDescriptor> getAvailableFeatures();
 
     @Override
     public ProjectDTO createProject(ProjectDTO dto) {
@@ -256,33 +256,33 @@ public abstract class AbstractTemplate implements Template {
 //    }
 
 
-    @Override
-    public TaskDTO createStory(Long projectId, TaskDTO taskDTO) {
-        Sprint sprint = null;
-        if (taskDTO.getSprintId() != null) {
-            sprint = sprintRepository.findById(taskDTO.getSprintId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Sprint not found with ID " + taskDTO.getSprintId()));
-        }
-
-        Story story = Story.builder()
-                .projectId(projectId)
-                .sprintId(sprint != null ? sprint.getId() : null)
-                .title(taskDTO.getTitle())
-                .description(taskDTO.getDescription())
-                .status(taskDTO.getStatus() != null ? taskDTO.getStatus() : "To Do")
-                .storyPoints(taskDTO.getStoryPoints())
-                .build();
-
-        story = storyRepository.save(story);
-
-        taskDTO.setId(story.getId());
-        taskDTO.setProjectId(story.getProjectId());
-        return taskDTO;
-    }
+//    @Override
+//    public TaskDTO createStory(Long projectId, TaskDTO taskDTO) {
+//        Sprint sprint = null;
+//        if (taskDTO.getSprintId() != null) {
+//            sprint = sprintRepository.findById(taskDTO.getSprintId())
+//                    .orElseThrow(() -> new ResourceNotFoundException("Sprint not found with ID " + taskDTO.getSprintId()));
+//        }
+//
+//        Story story = Story.builder()
+//                .projectId(projectId)
+//                .sprintId(sprint != null ? sprint.getId() : null)
+//                .title(taskDTO.getTitle())
+//                .description(taskDTO.getDescription())
+//                .status(taskDTO.getStatus() != null ? taskDTO.getStatus() : "To Do")
+//                .storyPoints(taskDTO.getStoryPoints())
+//                .build();
+//
+//        story = storyRepository.save(story);
+//
+//        taskDTO.setId(story.getId());
+//        taskDTO.setProjectId(story.getProjectId());
+//        return taskDTO;
+//    }
 
 
     private List<String> getFeatureKeys() {
-        return getAvailableFeatures().stream().map(FeatureDescriptor::getKey).toList();
+        return getAvailableFeatures().stream().map(SprintCapableTemplate.FeatureDescriptor::getKey).toList();
     }
 
 

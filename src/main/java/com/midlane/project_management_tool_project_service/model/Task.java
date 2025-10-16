@@ -19,7 +19,6 @@ public class Task {
 
     private Long projectId;
     private Long sprintId;
-
     private String title;
     private String description;
     private String assignee;
@@ -29,7 +28,6 @@ public class Task {
     private String priority;
     private String status;
     private String type;
-
     private Integer storyPoints;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

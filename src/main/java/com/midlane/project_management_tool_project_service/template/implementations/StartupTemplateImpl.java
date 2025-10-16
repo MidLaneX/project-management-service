@@ -1,7 +1,7 @@
 package com.midlane.project_management_tool_project_service.template.implementations;
 
-import com.midlane.project_management_tool_project_service.dto.*;
 import com.midlane.project_management_tool_project_service.repository.*;
+import com.midlane.project_management_tool_project_service.template.SprintCapableTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,11 +14,11 @@ import java.util.List;
 @Component
 public class StartupTemplateImpl extends AbstractTemplate {
 
-    private static final List<FeatureDescriptor> STARTUP_FEATURES = List.of(
-            new FeatureDescriptor("estimation", "Sprint Reports"),
-            new FeatureDescriptor("startup", "Startup Stages"),
-            new FeatureDescriptor("kanban", "Agile Board"),
-            new FeatureDescriptor("backlog", "Feature Planning")
+    private static final List<SprintCapableTemplate.FeatureDescriptor> STARTUP_FEATURES = List.of(
+            new SprintCapableTemplate.FeatureDescriptor("estimation", "Sprint Reports"),
+            new SprintCapableTemplate.FeatureDescriptor("startup", "Startup Stages"),
+            new SprintCapableTemplate.FeatureDescriptor("kanban", "Agile Board"),
+            new SprintCapableTemplate.FeatureDescriptor("backlog", "Feature Planning")
     );
 
     public StartupTemplateImpl(ProjectRepository projectRepo,
@@ -34,12 +34,12 @@ public class StartupTemplateImpl extends AbstractTemplate {
     }
 
     @Override
-    public List<FeatureDescriptor> getAvailableFeatures() {
+    public List<SprintCapableTemplate.FeatureDescriptor> getAvailableFeatures() {
         return STARTUP_FEATURES;
     }
 
-    @Override
-    public TaskDTO getStory(ProjectDTO dto) {
-        return null;
-    }
+//    @Override
+//    public TaskDTO getStory(ProjectDTO dto) {
+//        return null;
+//    }
 }

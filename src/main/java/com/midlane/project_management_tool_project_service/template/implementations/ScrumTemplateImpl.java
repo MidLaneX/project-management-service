@@ -50,16 +50,6 @@ public class ScrumTemplateImpl extends AbstractTemplate implements SprintCapable
     }
 
 
-//    private static final List<FeatureDescriptor> FEATURES = List.of(
-//            new FeatureDescriptor("backlog", "Backlog Management"),
-//            new FeatureDescriptor("sprint", "Sprint Planning"),
-//            new FeatureDescriptor("board", "Task Board"),
-//            new FeatureDescriptor("report", "Sprint Reports")
-//    );
-    @Override
-    public TaskDTO getStory(ProjectDTO dto) {
-        return null;
-    }
 
 
     public SprintDTO createSprint(Long projectId, SprintDTO sprintDTO) {

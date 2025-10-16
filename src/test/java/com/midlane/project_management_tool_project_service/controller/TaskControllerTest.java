@@ -47,14 +47,17 @@ class TaskControllerTest {
 
     @Test
     void updateTaskStatus_ShouldCallService() {
+        // Prepare DTO
         TaskDTO dto = new TaskDTO();
         when(taskService.updateTaskStatus(1L, "DONE", "scrum")).thenReturn(dto);
-
         TaskController.TaskStatusRequest req = new TaskController.TaskStatusRequest();
         req.setStatus("DONE");
 
-        var response = taskController.updateTaskStatus(1L, 1L, req, "scrum");
+        // Call controller method — pass the object, not string
+        var response = taskController.updateTaskStatus(1L, req, "scrum");
 
+        // Assert response
         assertThat(response.getBody()).isEqualTo(dto);
     }
+
 }

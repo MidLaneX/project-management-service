@@ -98,9 +98,9 @@ public class ProjectController {
 //    public ResponseEntity<List<ProjectDTO>> getProjectsOfUser(@RequestParam Long userId ,@RequestParam String templateType) {
 //        return ResponseEntity.ok(projectService.getProjectsOfUser(userId, templateType));
 //    }
-    @PostMapping("/{projectId}/stories")
-    public ResponseEntity<TaskDTO> createStory(@PathVariable Long projectId, @RequestBody TaskDTO taskDTO, @PathVariable String templateType) {
-        return ResponseEntity.ok(projectService.createStory(projectId, taskDTO, templateType));
-    }
+//    @PostMapping("/{projectId}/stories")
+//    public ResponseEntity<TaskDTO> createStory(@PathVariable Long projectId, @RequestBody TaskDTO taskDTO, @PathVariable String templateType) {
+//        return ResponseEntity.ok(projectService.createStory(projectId, taskDTO, templateType));
+//    }
 
 }

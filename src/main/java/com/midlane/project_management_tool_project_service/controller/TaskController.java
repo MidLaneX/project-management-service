@@ -2,7 +2,9 @@ package com.midlane.project_management_tool_project_service.controller;
 
 import com.midlane.project_management_tool_project_service.dto.TaskDTO;
 import com.midlane.project_management_tool_project_service.service.TaskService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +36,6 @@ public class TaskController {
 
     @GetMapping("/{taskId}")
     public ResponseEntity<TaskDTO> getTaskById(
-            @PathVariable Long projectId,
             @PathVariable Long taskId,
             @RequestParam(defaultValue = "scrum") String templateType
     ) {
@@ -43,7 +44,6 @@ public class TaskController {
 
     @PutMapping("/{taskId}")
     public ResponseEntity<TaskDTO> updateTask(
-            @PathVariable Long projectId,
             @PathVariable Long taskId,
             @RequestBody TaskDTO dto,
             @RequestParam(defaultValue = "scrum") String templateType
@@ -53,47 +53,34 @@ public class TaskController {
 
     @PutMapping("/{taskId}/{sprintId}")
         public ResponseEntity<TaskDTO> updateSprint(
-
                 @PathVariable Long taskId,
                 @PathVariable Long sprintId,
-                @RequestParam(defaultValue = "scrum") String templateType
-        ) {
+                @RequestParam(defaultValue = "scrum") String templateType) {
             return ResponseEntity.ok(taskService.updateSprint(taskId, sprintId, templateType));
         }
 
 
-
-
     @DeleteMapping("/{taskId}")
     public ResponseEntity<Void> deleteTask(
-            @PathVariable Long projectId,
             @PathVariable Long taskId,
-            @RequestParam(defaultValue = "scrum") String templateType
-    ) {
+            @RequestParam(defaultValue = "scrum") String templateType) {
         taskService.deleteTask(taskId, templateType);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{taskId}/status")
     public ResponseEntity<TaskDTO> updateTaskStatus(
-            @PathVariable Long projectId,
             @PathVariable Long taskId,
             @RequestBody TaskStatusRequest statusRequest,
             @RequestParam(defaultValue = "scrum") String templateType
-    ) {
+            ) {
         return ResponseEntity.ok(taskService.updateTaskStatus(taskId, statusRequest.getStatus(), templateType));
     }
 
-
-
-    // DTO to accept status body
+    @Setter
+    @Getter
     public static class TaskStatusRequest {
         private String status;
-        public String getStatus() {
-            return status;
-        }
-        public void setStatus(String status) {
-            this.status = status;
-        }
+
     }
 }

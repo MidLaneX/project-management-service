@@ -1,7 +1,7 @@
 package com.midlane.project_management_tool_project_service.service;
 
 import com.midlane.project_management_tool_project_service.dto.*;
-import com.midlane.project_management_tool_project_service.template.implementations.FeatureDescriptor;
+import com.midlane.project_management_tool_project_service.template.SprintCapableTemplate;
 import com.midlane.project_management_tool_project_service.template.TemplateFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,13 +17,11 @@ public class ProjectService {
     public ProjectDTO createProject(ProjectDTO dto, String templateType) {
         return templateFactory.getTemplate(templateType).createProject(dto);
     }
-  //==============new==================================
-  public List<ProjectDTO> getProjectsForUser(Long userId, Long orgId, String templateType) {
+
+    public List<ProjectDTO> getProjectsForUser(Long userId, Long orgId, String templateType) {
       return templateFactory.getTemplate(templateType)
               .getProjectsForUser(userId, orgId);
-  }
-
-
+    }
 
     public ProjectDTO getProject(Long projectId, String templateType) {
         return templateFactory.getTemplate(templateType).getProject(projectId);
@@ -38,32 +36,6 @@ public class ProjectService {
     }
 
 
-
-    public TaskDTO createStory(Long projectId, TaskDTO taskDTO, String templateType) {
-        return templateFactory.getTemplate(templateType).createStory(projectId, taskDTO);
-    }
-
-
-
-    public TaskDTO getStory(ProjectDTO dto) {
-        return templateFactory.getTemplate(dto.getTemplateType()).getStory(dto);
-    }
-//
-//    public UserProjectDTO createUserProject(ProjectDTO projectDTO, UserProjectRequestDTO userProjectDTO) {
-//        return templateFactory.getTemplate(projectDTO.getTemplateType()).createUserProject(projectDTO, userProjectDTO);
-//    }
-//
-//    public List<UserProjectDTO> getUsersOfProject(ProjectDTO projectDTO) {
-//        return templateFactory.getTemplate(projectDTO.getTemplateType()).getUsersOfProject(projectDTO);
-//    }
-//
-//    public List<ProjectDTO> getProjectsOfUser(Long userId, String templateType) {
-//        return templateFactory.getTemplate(templateType).getProjectsOfUser(userId);
-//    }
-
-    public List<FeatureDescriptor> getTemplateFeatures(String templateType) {
-        return templateFactory.getTemplate(templateType).getAvailableFeatures();
-    }
     public ProjectDTO updateProject(Long userId,Long projectId, String templateType, ProjectDTO dto) {
         return templateFactory.getTemplate(templateType).updateProject(userId,projectId, dto);
     }
