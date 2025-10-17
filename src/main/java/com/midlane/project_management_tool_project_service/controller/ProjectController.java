@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @RestController
@@ -59,12 +60,13 @@ public class ProjectController {
 
     @PostMapping("/{projectId}/assignTeamToProject")
     public ResponseEntity<List<UserProjectDTO>> assignTeamToProject(
+            @RequestParam Long userId,
             @PathVariable Long projectId,
             @RequestParam String templateType,
-            @RequestParam Long teamId) {
+            @RequestParam Long teamId) throws AccessDeniedException {
 
 
-        return ResponseEntity.ok(projectService.assignTeamToProject(projectId, templateType, teamId));
+        return ResponseEntity.ok(projectService.assignTeamToProject(userId,projectId, templateType, teamId));
     }
 
 

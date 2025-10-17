@@ -1,4 +1,4 @@
-package com.midlane.project_management_tool_project_service.template.implementations;
+package com.midlane.project_management_tool_project_service.templatesvc.implementations;
 
 import com.midlane.project_management_tool_project_service.dto.*;
 import com.midlane.project_management_tool_project_service.exception.ResourceNotFoundException;
@@ -9,9 +9,9 @@ import com.midlane.project_management_tool_project_service.repository.ProjectRep
 import com.midlane.project_management_tool_project_service.repository.TaskRepository;
 import com.midlane.project_management_tool_project_service.repository.UserProjectRepository;
 import com.midlane.project_management_tool_project_service.repository.featureRepository.SprintRepository;
-import com.midlane.project_management_tool_project_service.repository.featureRepository.StoryRepository;
 
-import com.midlane.project_management_tool_project_service.template.SprintCapableTemplate;
+
+import com.midlane.project_management_tool_project_service.templatesvc.SprintCapableTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -27,16 +27,15 @@ public class ScrumTemplateImpl extends AbstractTemplate implements SprintCapable
             new FeatureDescriptor("sprint", "Sprint Planning"),
             new FeatureDescriptor("scrum_board", "Task Board"),
             new FeatureDescriptor("estimation", "Sprint Reports"),
-            new FeatureDescriptor("timeline", "Sprint TimeLine")
+            new FeatureDescriptor("timeline", "Sprint TimeLine"),
+            new SprintCapableTemplate.FeatureDescriptor("calender", "calender")
     );
 
     public ScrumTemplateImpl(ProjectRepository projectRepo,
                              SprintRepository sprintRepo,
-                             StoryRepository storyRepo,
-
                              UserProjectRepository userProjectRepository,
                              TaskRepository taskRepo) {
-        super(projectRepo, sprintRepo, storyRepo,  taskRepo,userProjectRepository);
+        super(projectRepo, sprintRepo,  taskRepo,userProjectRepository);
     }
 
     @Override
@@ -187,7 +186,4 @@ public class ScrumTemplateImpl extends AbstractTemplate implements SprintCapable
     }
 
 
-
-
-    // You can override specific methods here if needed
 }

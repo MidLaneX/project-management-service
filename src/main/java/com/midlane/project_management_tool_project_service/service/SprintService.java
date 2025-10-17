@@ -1,10 +1,9 @@
 package com.midlane.project_management_tool_project_service.service;
 
-import com.midlane.project_management_tool_project_service.dto.ProjectDTO;
 import com.midlane.project_management_tool_project_service.dto.SprintDTO;
-import com.midlane.project_management_tool_project_service.template.SprintCapableTemplate;
-import com.midlane.project_management_tool_project_service.template.Template;
-import com.midlane.project_management_tool_project_service.template.TemplateFactory;
+import com.midlane.project_management_tool_project_service.templatesvc.SprintCapableTemplate;
+import com.midlane.project_management_tool_project_service.templatesvc.Template;
+import com.midlane.project_management_tool_project_service.templatesvc.TemplateFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package com.midlane.project_management_tool_project_service.template;
+package com.midlane.project_management_tool_project_service.templatesvc;
 
 import com.midlane.project_management_tool_project_service.dto.*;
 import lombok.Getter;

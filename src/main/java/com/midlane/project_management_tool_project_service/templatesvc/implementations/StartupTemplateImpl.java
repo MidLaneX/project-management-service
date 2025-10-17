@@ -1,7 +1,7 @@
-package com.midlane.project_management_tool_project_service.template.implementations;
+package com.midlane.project_management_tool_project_service.templatesvc.implementations;
 
 import com.midlane.project_management_tool_project_service.repository.*;
-import com.midlane.project_management_tool_project_service.template.SprintCapableTemplate;
+import com.midlane.project_management_tool_project_service.templatesvc.SprintCapableTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public class StartupTemplateImpl extends AbstractTemplate {
                                TaskRepository taskRepo,
 
                                UserProjectRepository userProjectRepository) {
-        super(projectRepo, null, null,  taskRepo, userProjectRepository);
+        super(projectRepo, null,   taskRepo, userProjectRepository);
     }
 
     @Override
