@@ -19,7 +19,7 @@ public interface UserProjectRepository extends JpaRepository<UserProject, Long> 
     boolean existsByProjectId(Long projectId);
 
     @Query("SELECT up.teamId FROM UserProject up WHERE up.projectId = :projectId")
-    Long findFirstTeamIdByProjectId(@Param("projectId") Long projectId);
+    Optional<Long> findFirstTeamIdByProjectId(@Param("projectId") Long projectId);
     @Query("SELECT DISTINCT up.projectId FROM UserProject up WHERE up.teamId = :teamId AND up.projectId IS NOT NULL")
     List<Long> findProjectIdsByTeamId(@Param("teamId") Long teamId);
     List<UserProject> findByProjectId(Long projectId);

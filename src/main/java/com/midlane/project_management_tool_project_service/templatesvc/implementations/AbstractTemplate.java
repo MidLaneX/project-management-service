@@ -64,7 +64,7 @@ public abstract class AbstractTemplate implements Template {
                 .name(dto.getName())
                 .type(dto.getType())
                 .templateType(getTemplateType())
-                .features(getFeatureKeys())
+                .features(new ArrayList<>(getFeatureKeys()))
                 .orgId(orgId)
                 .createdAt(dto.getCreatedAt())
                 .createdBy(dto.getCreatedBy())
@@ -275,7 +275,8 @@ public abstract class AbstractTemplate implements Template {
         }
 
 
-        return userProjectRepository.findFirstTeamIdByProjectId(projectId);
+        return userProjectRepository.findFirstTeamIdByProjectId(projectId)
+                .orElse(null);
     }
 
 
