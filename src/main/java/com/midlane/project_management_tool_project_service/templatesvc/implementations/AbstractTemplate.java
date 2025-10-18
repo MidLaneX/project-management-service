@@ -1,24 +1,25 @@
-package com.midlane.project_management_tool_project_service.template.implementations;
+package com.midlane.project_management_tool_project_service.templatesvc.implementations;
 
 import com.midlane.project_management_tool_project_service.dto.*;
 import com.midlane.project_management_tool_project_service.exception.ResourceNotFoundException;
 import com.midlane.project_management_tool_project_service.model.*;
-import com.midlane.project_management_tool_project_service.model.featureItemModel.*;
 import com.midlane.project_management_tool_project_service.repository.*;
 import com.midlane.project_management_tool_project_service.repository.featureRepository.*;
-import com.midlane.project_management_tool_project_service.template.Template;
+import com.midlane.project_management_tool_project_service.templatesvc.SprintCapableTemplate;
+import com.midlane.project_management_tool_project_service.templatesvc.Template;
+import jakarta.transaction.Transactional;
 
 
+import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public abstract class AbstractTemplate implements Template {
 
     protected final ProjectRepository projectRepository;
     protected final SprintRepository sprintRepository;
-    protected final StoryRepository storyRepository;
-
     protected  final  TaskRepository taskRepository;
     protected  final UserProjectRepository userProjectRepository;
 
@@ -28,14 +29,10 @@ public abstract class AbstractTemplate implements Template {
 
     protected AbstractTemplate(ProjectRepository projectRepo,
                                SprintRepository sprintRepo,
-                               StoryRepository storyRepo,
-
                                TaskRepository taskRepo,
                                UserProjectRepository userProjectRepository) {
         this.projectRepository = projectRepo;
         this.sprintRepository = sprintRepo;
-        this.storyRepository = storyRepo;
-
         this.taskRepository = taskRepo;
         this.userProjectRepository = userProjectRepository;
     }
@@ -44,27 +41,41 @@ public abstract class AbstractTemplate implements Template {
     public abstract String getTemplateType();
 
     @Override
-    public abstract List<FeatureDescriptor> getAvailableFeatures();
+    public abstract List<SprintCapableTemplate.FeatureDescriptor> getAvailableFeatures();
 
     @Override
     public ProjectDTO createProject(ProjectDTO dto) {
+        Long userId = dto.getUserId();
+        Long orgId = dto.getOrgId();
+
+        if (userId == null || orgId == null) {
+            throw new IllegalArgumentException("Both userId (createdBy) and orgId are required to create a project.");
+        }
+
+        boolean isAdmin = !userProjectRepository
+                .findByUserIdAndOrgIdAndRole(userId, orgId, "ADMIN")
+                .isEmpty();
+
+        if (!isAdmin) {
+            throw new SecurityException("Access denied: Only ADMIN users can create projects in this organization.");
+        }
+
         Project project = Project.builder()
                 .name(dto.getName())
                 .type(dto.getType())
                 .templateType(getTemplateType())
                 .features(getFeatureKeys())
-                .orgId(dto.getOrgId())
+                .orgId(orgId)
                 .createdAt(dto.getCreatedAt())
                 .createdBy(dto.getCreatedBy())
                 .build();
+
         project = projectRepository.save(project);
-
-
-
         dto.setId(project.getId());
         dto.setFeatures(project.getFeatures());
         return dto;
     }
+
 
 
     @Override
@@ -162,24 +173,55 @@ public abstract class AbstractTemplate implements Template {
         projectRepository.deleteById(projectId);
     }
 
-
+    @Transactional
     @Override
-    public List<UserProjectDTO> assignTeamToProject(Long projectId, Long teamId) {
-        // 1. Fetch all users in the team
+    public List<UserProjectDTO> assignTeamToProject(Long userId, Long projectId, Long teamId) throws AccessDeniedException {
+        // Get orgId from any member of the team
+        UserProject sample = userProjectRepository.findByTeamId(teamId).stream()
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("No users found for teamId " + teamId));
+        Long orgId = sample.getOrgId();
+
+        // Check if calling user is ADMIN in this org
+        boolean isAdmin = !userProjectRepository
+                .findByUserIdAndOrgIdAndRole(userId, orgId, "ADMIN")
+                .isEmpty();
+
+        if (!isAdmin) {
+            throw new AccessDeniedException("Only ADMIN users can assign or reassign teams to projects.");
+        }
+
+        //  Fetch all users in the team
         List<UserProject> teamUsers = userProjectRepository.findByTeamId(teamId);
         if (teamUsers.isEmpty()) {
             throw new ResourceNotFoundException("No users found for teamId " + teamId);
         }
 
-        // 2. Update each user with the new projectId
+        //  Clear old projects assigned to this team
+        List<Long> oldProjectIds = userProjectRepository.findProjectIdsByTeamId(teamId);
+        if (!oldProjectIds.isEmpty()) {
+            for (UserProject up : teamUsers) {
+                up.setProjectId(null);
+            }
+            userProjectRepository.saveAll(teamUsers);
+        }
+
+        // Clear any existing team previously assigned to this project
+        List<UserProject> otherTeams = userProjectRepository.findByProjectId(projectId);
+        for (UserProject up : otherTeams) {
+            if (!Objects.equals(up.getTeamId(), teamId)) {
+                up.setProjectId(null);
+            }
+        }
+        userProjectRepository.saveAll(otherTeams);
+
+        //  Assign the new project to this team
         for (UserProject userProject : teamUsers) {
             userProject.setProjectId(projectId);
         }
-
-        // 3. Save all updated records
         List<UserProject> updatedUsers = userProjectRepository.saveAll(teamUsers);
 
-        // 4. Convert entities to DTOs manually
+        // Convert entities to DTOs
         List<UserProjectDTO> result = new ArrayList<>();
         for (UserProject userProject : updatedUsers) {
             UserProjectDTO dto = new UserProjectDTO();
@@ -192,6 +234,37 @@ public abstract class AbstractTemplate implements Template {
 
         return result;
     }
+
+
+
+//    public List<UserProjectDTO> assignTeamToProject(Long projectId, Long teamId) {
+//        // 1. Fetch all users in the team
+//        List<UserProject> teamUsers = userProjectRepository.findByTeamId(teamId);
+//        if (teamUsers.isEmpty()) {
+//            throw new ResourceNotFoundException("No users found for teamId " + teamId);
+//        }
+//
+//        // 2. Update each user with the new projectId
+//        for (UserProject userProject : teamUsers) {
+//            userProject.setProjectId(projectId);
+//        }
+//
+//        // 3. Save all updated records
+//        List<UserProject> updatedUsers = userProjectRepository.saveAll(teamUsers);
+//
+//        // 4. Convert entities to DTOs manually
+//        List<UserProjectDTO> result = new ArrayList<>();
+//        for (UserProject userProject : updatedUsers) {
+//            UserProjectDTO dto = new UserProjectDTO();
+//            dto.setId(userProject.getId());
+//            dto.setProjectId(userProject.getProjectId());
+//            dto.setUserId(userProject.getUserId());
+//            dto.setRole(userProject.getRole());
+//            result.add(dto);
+//        }
+//
+//        return result;
+//    }
 
     @Override
     public Long getAssignedTeamOfProject(Long projectId) {
@@ -256,33 +329,33 @@ public abstract class AbstractTemplate implements Template {
 //    }
 
 
-    @Override
-    public TaskDTO createStory(Long projectId, TaskDTO taskDTO) {
-        Sprint sprint = null;
-        if (taskDTO.getSprintId() != null) {
-            sprint = sprintRepository.findById(taskDTO.getSprintId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Sprint not found with ID " + taskDTO.getSprintId()));
-        }
-
-        Story story = Story.builder()
-                .projectId(projectId)
-                .sprintId(sprint != null ? sprint.getId() : null)
-                .title(taskDTO.getTitle())
-                .description(taskDTO.getDescription())
-                .status(taskDTO.getStatus() != null ? taskDTO.getStatus() : "To Do")
-                .storyPoints(taskDTO.getStoryPoints())
-                .build();
-
-        story = storyRepository.save(story);
-
-        taskDTO.setId(story.getId());
-        taskDTO.setProjectId(story.getProjectId());
-        return taskDTO;
-    }
+//    @Override
+//    public TaskDTO createStory(Long projectId, TaskDTO taskDTO) {
+//        Sprint sprint = null;
+//        if (taskDTO.getSprintId() != null) {
+//            sprint = sprintRepository.findById(taskDTO.getSprintId())
+//                    .orElseThrow(() -> new ResourceNotFoundException("Sprint not found with ID " + taskDTO.getSprintId()));
+//        }
+//
+//        Story story = Story.builder()
+//                .projectId(projectId)
+//                .sprintId(sprint != null ? sprint.getId() : null)
+//                .title(taskDTO.getTitle())
+//                .description(taskDTO.getDescription())
+//                .status(taskDTO.getStatus() != null ? taskDTO.getStatus() : "To Do")
+//                .storyPoints(taskDTO.getStoryPoints())
+//                .build();
+//
+//        story = storyRepository.save(story);
+//
+//        taskDTO.setId(story.getId());
+//        taskDTO.setProjectId(story.getProjectId());
+//        return taskDTO;
+//    }
 
 
     private List<String> getFeatureKeys() {
-        return getAvailableFeatures().stream().map(FeatureDescriptor::getKey).toList();
+        return getAvailableFeatures().stream().map(SprintCapableTemplate.FeatureDescriptor::getKey).toList();
     }
 
 

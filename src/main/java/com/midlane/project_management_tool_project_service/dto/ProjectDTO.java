@@ -15,6 +15,7 @@ import java.util.List;
 public class ProjectDTO {
 
     private Long id;
+    private Long userId;
     private Long orgId;
     private String name;
     private String type;

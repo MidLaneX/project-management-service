@@ -1,7 +1,7 @@
 package com.midlane.project_management_tool_project_service.service;
 
 import com.midlane.project_management_tool_project_service.dto.TaskDTO;
-import com.midlane.project_management_tool_project_service.template.TemplateFactory;
+import com.midlane.project_management_tool_project_service.templatesvc.TemplateFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

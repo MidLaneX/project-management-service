@@ -48,14 +48,5 @@ class ProjectControllerTest {
         assertThat(response.getBody()).hasSize(1);
     }
 
-    @Test
-    void createStory_ShouldCallService() {
-        TaskDTO taskDTO = new TaskDTO();
-        when(projectService.createStory(1L, taskDTO, "scrum")).thenReturn(taskDTO);
 
-        var response = projectController.createStory(1L, taskDTO, "scrum");
-
-        assertThat(response.getBody()).isEqualTo(taskDTO);
-        verify(projectService).createStory(1L, taskDTO, "scrum");
-    }
 }

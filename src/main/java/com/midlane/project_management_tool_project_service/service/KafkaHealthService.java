@@ -21,7 +21,7 @@ public class KafkaHealthService {
 
     @EventListener(ApplicationReadyEvent.class)
     public void checkKafkaConnection() {
-        log.info("🔄 Project Service - Checking Kafka connection to: {}", bootstrapServers);
+        log.info("Project Service - Checking Kafka connection to: {}", bootstrapServers);
 
         CompletableFuture.runAsync(() -> {
             try {
@@ -33,14 +33,14 @@ public class KafkaHealthService {
                 try (AdminClient adminClient = AdminClient.create(props)) {
                     // Try to list topics to verify connection
                     adminClient.listTopics().names().get(5, TimeUnit.SECONDS);
-                    log.info("✅ Project Service - Successfully connected to Kafka at: {}", bootstrapServers);
-                    log.info("📥 Project Service - Kafka consumer is ready to receive team member events");
+                    log.info(" Project Service - Successfully connected to Kafka at: {}", bootstrapServers);
+                    log.info("Project Service - Kafka consumer is ready to receive team member events");
                 } catch (Exception e) {
-                    log.error("❌ Project Service - Failed to connect to Kafka at: {}. Error: {}", bootstrapServers, e.getMessage());
-                    log.warn("⚠️  Project Service - Team member events will not be processed until Kafka is available");
+                    log.error("Project Service - Failed to connect to Kafka at: {}. Error: {}", bootstrapServers, e.getMessage());
+                    log.warn("Project Service - Team member events will not be processed until Kafka is available");
                 }
             } catch (Exception e) {
-                log.error("❌ Project Service - Error during Kafka health check: {}", e.getMessage());
+                log.error("Project Service - Error during Kafka health check: {}", e.getMessage());
             }
         });
     }

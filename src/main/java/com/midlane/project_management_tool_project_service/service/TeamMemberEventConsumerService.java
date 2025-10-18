@@ -24,11 +24,11 @@ public class TeamMemberEventConsumerService {
     @Transactional
     public void handleTeamMemberAddedEvent(ConsumerRecord<String, Object> record) {
         try {
-            log.info("📨 Received team member added event from topic: {}, partition: {}, offset: {}",
+            log.info("Received team member added event from topic: {}, partition: {}, offset: {}",
                     record.topic(), record.partition(), record.offset());
 
             Object messageValue = record.value();
-            log.info("📨 Event message: {}", messageValue);
+            log.info("Event message: {}", messageValue);
 
             // Convert the deserialized object to DTO
             TeamMemberAddedEventDto event;
@@ -40,7 +40,7 @@ public class TeamMemberEventConsumerService {
                 event = objectMapper.convertValue(messageValue, TeamMemberAddedEventDto.class);
             }
 
-            log.info("🔄 Processing team member added event - UserId: {}, TeamId: {}, OrgId: {}, Role: {}",
+            log.info("Processing team member added event - UserId: {}, TeamId: {}, OrgId: {}, Role: {}",
                     event.getUserId(), event.getTeamId(), event.getOrganizationId(), event.getRole());
 
             // Check if user is already in the team for this organization
@@ -49,7 +49,7 @@ public class TeamMemberEventConsumerService {
                     .anyMatch(up -> up.getTeamId().equals(event.getTeamId()));
 
             if (exists) {
-                log.warn("⚠️ User {} is already a member of team {} in organization {}",
+                log.warn("User {} is already a member of team {} in organization {}",
                         event.getUserId(), event.getTeamId(), event.getOrganizationId());
                 return;
             }
@@ -65,14 +65,14 @@ public class TeamMemberEventConsumerService {
 
             UserProject savedUserProject = userProjectRepository.save(userProject);
 
-            log.info("✅ Successfully created UserProject entry with ID: {} for User: {} in Team: {} (Org: {})",
+            log.info("Successfully created UserProject entry with ID: {} for User: {} in Team: {} (Org: {})",
                     savedUserProject.getId(), event.getUserId(), event.getTeamId(), event.getOrganizationId());
 
         } catch (JsonProcessingException e) {
-            log.error("❌ Failed to parse team member added event JSON: {}", record.value(), e);
+            log.error("Failed to parse team member added event JSON: {}", record.value(), e);
         } catch (Exception e) {
-            log.error("❌ Error processing team member added event: {}", record.value(), e);
-            throw e; // Re-throw to trigger retry mechanism
+            log.error("Error processing team member added event: {}", record.value(), e);
+            throw e;
         }
     }
 }

@@ -1,9 +1,8 @@
 package com.midlane.project_management_tool_project_service.service;
 
 import com.midlane.project_management_tool_project_service.dto.SprintDTO;
-import com.midlane.project_management_tool_project_service.template.SprintCapableTemplate;
-import com.midlane.project_management_tool_project_service.template.Template;
-import com.midlane.project_management_tool_project_service.template.TemplateFactory;
+import com.midlane.project_management_tool_project_service.templatesvc.SprintCapableTemplate;
+import com.midlane.project_management_tool_project_service.templatesvc.TemplateFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
